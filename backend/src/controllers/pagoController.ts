@@ -51,40 +51,15 @@ export class PagoController {
       boleta.pagoId = transactionId;
       await boleta.save();
 
-      // MODO DEMO: Simular pago exitoso automáticamente después de 5 segundos
       // En producción, aquí crearías la transacción con Wompi
-      if (!process.env.WOMPI_PUBLIC_KEY || process.env.WOMPI_PUBLIC_KEY === 'pub_test_xxxxxx') {
-        // Modo demo sin Wompi
-        setTimeout(async () => {
-          try {
-            await PagoController.confirmarPago(transactionId, { demo: true, auto_approved: true });
-            console.log(`✅ [DEMO] Pago auto-aprobado para boleta #${boletaNumero}`);
-          } catch (error) {
-            console.error('Error en auto-aprobación demo:', error);
-          }
-        }, 5000);
-
-        return res.json({
-          success: true,
-          message: 'MODO DEMO: El pago se aprobará automáticamente en 5 segundos',
-          data: {
-            transactionId,
-            boletaNumero,
-            monto: 10000,
-            demo: true,
-            paymentUrl: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/confirmacion/${transactionId}`
-          }
-        });
-      }
-
-      // Con Wompi configurado
+      // Por ahora devolvemos la información básica
       res.json({
         success: true,
         data: {
           transactionId,
           boletaNumero,
           monto: 10000,
-          paymentUrl: `${process.env.FRONTEND_URL}/pago/${transactionId}`
+          paymentUrl: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/pago/${transactionId}`
         }
       });
     } catch (error) {
@@ -169,8 +144,7 @@ export class PagoController {
         boleta.reservadaHasta = undefined;
         await boleta.save();
         
-        const modoDemo = wompiData?.demo ? '[DEMO] ' : '';
-        console.log(`✅ ${modoDemo}Pago confirmado - Boleta #${pago.boletaNumero}`);
+        console.log(`✅ Pago confirmado - Boleta #${pago.boletaNumero}`);
       }
     } catch (error) {
       console.error('Error confirmando pago:', error);
@@ -215,9 +189,9 @@ export class PagoController {
     try {
       const eventSecret = process.env.WOMPI_EVENT_SECRET;
       
-      if (!eventSecret || eventSecret === 'xxxxxxxxxxxxx') {
-        console.log('⚠️ Modo DEMO: Webhook sin validación de firma');
-        return true; // En modo demo, aceptar webhooks
+      if (!eventSecret) {
+        console.error('❌ WOMPI_EVENT_SECRET no configurado');
+        return false;
       }
 
       // Construir el string a firmar según la documentación de Wompi

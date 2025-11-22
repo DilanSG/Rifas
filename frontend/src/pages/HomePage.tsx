@@ -57,23 +57,15 @@ export const HomePage = () => {
         telefono
       });
 
-      if (response.data.demo) {
-        // Modo demo
-        alert(`✅ Boleta #${boletaSeleccionada} reservada!\n\n🎭 MODO DEMO:\nEl pago se aprobará automáticamente en 5 segundos.\n\nRecarga la página para ver el cambio de estado.\n\nTransactionId: ${response.data.transactionId}`);
-      } else {
-        // Producción con Wompi
-        alert(`Boleta #${boletaSeleccionada} reservada exitosamente!\n\nSerás redirigido a la pasarela de pago de Wompi.\n\nTransactionId: ${response.data.transactionId}`);
-        // window.location.href = response.data.paymentUrl;
-      }
+      // Redirigir a Wompi para pago
+      alert(`✅ Boleta #${boletaSeleccionada} reservada por 10 minutos!\n\nSerás redirigido a Wompi para completar el pago.\n\nTransactionId: ${response.data.transactionId}`);
       
       handleCerrarModal();
       
-      // En modo demo, recargar después de 6 segundos para ver el cambio
-      if (response.data.demo) {
-        setTimeout(() => {
-          cargarDatos();
-        }, 6000);
-      }
+      // Recargar datos después de unos segundos
+      setTimeout(() => {
+        cargarDatos();
+      }, 2000);
     } catch (err: any) {
       alert(err.response?.data?.message || 'Error al procesar la reserva');
       console.error('Error:', err);
@@ -102,9 +94,6 @@ export const HomePage = () => {
           <p className="text-lg text-gray-600">
             Selecciona tu número de la suerte
           </p>
-          <div className="mt-2 inline-block bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-2 rounded-lg text-sm">
-            🎭 <strong>MODO DEMO</strong> - Los pagos se aprueban automáticamente
-          </div>
         </div>
 
         {/* Precio */}
