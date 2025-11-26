@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { BoletaController } from '../controllers/boletaController';
+import { upload } from '../config/multer';
 
 const router = Router();
 
@@ -9,10 +10,22 @@ router.get('/', BoletaController.listarBoletas);
 // GET /api/boletas/estadisticas - Obtener estadísticas
 router.get('/estadisticas', BoletaController.obtenerEstadisticas);
 
+// GET /api/boletas/admin/:secretKey - Panel de administración (protegido)
+router.get('/admin/:secretKey', BoletaController.obtenerBoletasAdmin);
+
+// POST /api/boletas/admin/:secretKey/:numero/marcar-pagada - Marcar como pagada
+router.post('/admin/:secretKey/:numero/marcar-pagada', BoletaController.marcarComoPagada);
+
+// POST /api/boletas/admin/:secretKey/:numero/liberar-reserva - Liberar reserva
+router.post('/admin/:secretKey/:numero/liberar-reserva', BoletaController.liberarReserva);
+
+// POST /api/boletas/admin/:secretKey/:numero/cambiar-reservada - Cambiar a reservada
+router.post('/admin/:secretKey/:numero/cambiar-reservada', BoletaController.cambiarAReservada);
+
 // GET /api/boletas/:numero - Obtener una boleta específica
 router.get('/:numero', BoletaController.obtenerBoleta);
 
-// POST /api/boletas/:numero/reservar - Reservar una boleta
-router.post('/:numero/reservar', BoletaController.reservarBoleta);
+// POST /api/boletas/:numero/reservar - Reservar una boleta (con upload opcional de comprobante)
+router.post('/:numero/reservar', upload.single('comprobante'), BoletaController.reservarBoleta);
 
 export default router;

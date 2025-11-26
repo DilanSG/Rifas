@@ -22,6 +22,7 @@ export interface IBoleta {
   usuario?: IUsuarioData;
   reservadaHasta?: Date;
   pagoId?: string;
+  comprobanteUrl?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -32,29 +33,21 @@ export interface IPago {
   monto: number;
   estado: PagoEstado;
   usuario: IUsuarioData;
-  wompiData?: any;
+  mercadoPagoData?: any;
+  preferenceId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface WompiWebhookPayload {
-  event: string;
+export interface MercadoPagoNotification {
+  id: number;
+  live_mode: boolean;
+  type: string;
+  date_created: string;
+  user_id: string;
+  api_version: string;
+  action: string;
   data: {
-    transaction: {
-      id: string;
-      amount_in_cents: number;
-      reference: string;
-      customer_email?: string;
-      payment_method_type?: string;
-      status: string;
-      status_message?: string;
-      created_at: string;
-    };
-  };
-  sent_at: string;
-  timestamp: number;
-  signature: {
-    checksum: string;
-    properties: string[];
+    id: string;
   };
 }

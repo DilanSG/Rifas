@@ -27,6 +27,9 @@ const boletaSchema = new Schema<IBoletaDocument>(
     },
     pagoId: {
       type: String
+    },
+    comprobanteUrl: {
+      type: String
     }
   },
   {

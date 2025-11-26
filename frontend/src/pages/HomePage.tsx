@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Boleta, Estadisticas } from '../types';
-import { boletaService, pagoService } from '../services/api';
+import { Loader2 } from 'lucide-react';
+import { Boleta } from '../types';
+import { boletaService } from '../services/api';
 import { BoletaItem } from '../components/BoletaItem';
 import { ModalPago } from '../components/ModalPago';
 
 export const HomePage = () => {
   const [boletas, setBoletas] = useState<Boleta[]>([]);
-  const [estadisticas, setEstadisticas] = useState<Estadisticas | null>(null);
   const [boletaSeleccionada, setBoletaSeleccionada] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,12 +20,8 @@ export const HomePage = () => {
 
   const cargarDatos = async () => {
     try {
-      const [boletasData, stats] = await Promise.all([
-        boletaService.obtenerBoletas(),
-        boletaService.obtenerEstadisticas()
-      ]);
+      const boletasData = await boletaService.obtenerBoletas();
       setBoletas(boletasData);
-      setEstadisticas(stats);
       setError(null);
     } catch (err) {
       setError('Error al cargar las boletas. Por favor, intenta nuevamente.');
@@ -43,124 +39,96 @@ export const HomePage = () => {
     setBoletaSeleccionada(null);
   };
 
-  const handleConfirmarPago = async (nombre: string, telefono: string) => {
+  const handleConfirmarPago = async (nombre: string, telefono: string, comprobante?: File) => {
     if (!boletaSeleccionada) return;
 
     try {
-      // Primero reservar la boleta
-      await boletaService.reservarBoleta(boletaSeleccionada, { nombre, telefono });
+      // Reservar la boleta con los datos del usuario y comprobante opcional
+      await boletaService.reservarBoleta(
+        boletaSeleccionada, 
+        { nombre, telefono },
+        comprobante
+      );
 
-      // Crear intención de pago
-      const response = await pagoService.crearPago({
-        boletaNumero: boletaSeleccionada,
-        nombre,
-        telefono
-      });
-
-      // Redirigir a Wompi para pago
-      alert(`✅ Boleta #${boletaSeleccionada} reservada por 10 minutos!\n\nSerás redirigido a Wompi para completar el pago.\n\nTransactionId: ${response.data.transactionId}`);
+      // Recargar las boletas para actualizar el estado
+      await cargarDatos();
       
-      handleCerrarModal();
-      
-      // Recargar datos después de unos segundos
-      setTimeout(() => {
-        cargarDatos();
-      }, 2000);
+      return { success: true };
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Error al procesar la reserva');
       console.error('Error:', err);
+      throw err;
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Cargando boletas...</p>
+          <Loader2 className="w-12 h-12 text-white animate-spin mx-auto mb-4" />
+          <p className="text-white font-medium">Cargando boletas...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
-            🎟️ Rifa de Boletas
-          </h1>
-          <p className="text-lg text-gray-600">
-            Selecciona tu número de la suerte
-          </p>
-        </div>
-
-        {/* Precio */}
-        <div className="max-w-md mx-auto mb-8 bg-white rounded-lg shadow-lg p-6 text-center">
-          <p className="text-gray-600 mb-2">Precio por boleta</p>
-          <p className="text-4xl font-bold text-blue-600">$10.000</p>
-          <p className="text-sm text-gray-500 mt-2">COP</p>
-        </div>
-
-        {/* Estadísticas */}
-        {estadisticas && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 max-w-4xl mx-auto">
-            <div className="bg-white rounded-lg shadow p-4 text-center">
-              <p className="text-2xl font-bold text-disponible">{estadisticas.disponibles}</p>
-              <p className="text-sm text-gray-600">Disponibles</p>
+    <div className="min-h-screen relative flex items-center justify-center py-4 sm:py-8 px-2 sm:px-4">
+      <div className="max-w-md w-full relative z-10">
+        {/* Card principal con fondo oscuro */}
+        <div className="bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden border border-gray-700/50">
+          {/* Header con título y premio */}
+          <div className="text-center pt-4 sm:pt-8 pb-4 sm:pb-6 px-4 sm:px-6 relative">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-2 sm:mb-3">
+              <span className="text-gray-300">GRAN</span>
+              <span className="text-white italic">rifa</span>
+            </h1>
+            <div className="text-4xl sm:text-5xl md:text-6xl font-black text-white mb-1">
+              $1.000.000
             </div>
-            <div className="bg-white rounded-lg shadow p-4 text-center">
-              <p className="text-2xl font-bold text-reservada">{estadisticas.reservadas}</p>
-              <p className="text-sm text-gray-600">Reservadas</p>
+            <p className="text-gray-300 text-xs sm:text-sm font-medium">
+              $20.000 cada número
+            </p>
+          </div>
+
+          {/* Error */}
+          {error && (
+            <div className="mx-3 sm:mx-6 mb-3 sm:mb-4">
+              <div className="bg-red-500/20 border border-red-500/50 text-red-200 px-3 py-2 rounded-lg text-xs">
+                {error}
+              </div>
             </div>
-            <div className="bg-white rounded-lg shadow p-4 text-center">
-              <p className="text-2xl font-bold text-pagada">{estadisticas.pagadas}</p>
-              <p className="text-sm text-gray-600">Vendidas</p>
+          )}
+
+          {/* Grid de Boletas */}
+          <div className="px-3 sm:px-6 pb-4 sm:pb-6">
+            <div className="bg-white/95 backdrop-blur-sm rounded-xl p-2 sm:p-4 shadow-inner">
+              <div className="grid grid-cols-10 gap-0.5 sm:gap-1">
+                {boletas.map((boleta) => (
+                  <BoletaItem
+                    key={boleta._id}
+                    boleta={boleta}
+                    onSelect={handleSeleccionarBoleta}
+                  />
+                ))}
+              </div>
             </div>
-            <div className="bg-white rounded-lg shadow p-4 text-center">
-              <p className="text-2xl font-bold text-blue-600">{estadisticas.total}</p>
-              <p className="text-sm text-gray-600">Total</p>
+          </div>
+
+          {/* Footer con información */}
+          <div className="bg-black/40 backdrop-blur-sm px-3 sm:px-6 py-3 sm:py-4 border-t border-gray-700/50">
+            <div className="flex justify-between items-center text-xs sm:text-xs mb-2 sm:mb-3">
+              <div className="text-left">
+                <p className="text-gray-400 mb-0.5 text-[10px] sm:text-xs">Transferencias al:</p>
+                <p className="text-white font-bold text-xs sm:text-sm">3105572015</p>
+                <p className="text-gray-300 text-[9px] sm:text-[10px]">Responsable Dilan Acuña</p>
+              </div>
+              <div className="text-right">
+                <p className="text-gray-400 mb-0.5 text-[10px] sm:text-xs">Juega el:</p>
+                <p className="text-white font-black text-2xl sm:text-2xl leading-none">20 Diciembre 2025</p>
+                <p className="text-gray-300 text-xs sm:text-sm">Con la loteria de Boyacá (Sorteo 4603)</p>
+              </div>
             </div>
           </div>
-        )}
-
-        {/* Leyenda */}
-        <div className="flex justify-center gap-6 mb-8 flex-wrap">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-disponible rounded"></div>
-            <span className="text-sm text-gray-700">Disponible</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-pagada rounded"></div>
-            <span className="text-sm text-gray-700">Vendida</span>
-          </div>
-        </div>
-
-        {/* Error */}
-        {error && (
-          <div className="max-w-4xl mx-auto mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-            {error}
-          </div>
-        )}
-
-        {/* Grid de Boletas */}
-        <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg p-6">
-          <div className="grid grid-cols-5 md:grid-cols-10 gap-2 md:gap-3">
-            {boletas.map((boleta) => (
-              <BoletaItem
-                key={boleta._id}
-                boleta={boleta}
-                onSelect={handleSeleccionarBoleta}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="text-center mt-8 text-gray-600 text-sm">
-          <p>Las boletas se actualizan automáticamente cada 30 segundos</p>
-          <p className="mt-2">Sistema seguro de pagos con Wompi</p>
         </div>
       </div>
 

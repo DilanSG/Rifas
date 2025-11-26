@@ -29,8 +29,11 @@ const pagoSchema = new Schema<IPagoDocument>(
       nombre: { type: String, required: true },
       telefono: { type: String, required: true }
     },
-    wompiData: {
+    mercadoPagoData: {
       type: Schema.Types.Mixed
+    },
+    preferenceId: {
+      type: String
     }
   },
   {

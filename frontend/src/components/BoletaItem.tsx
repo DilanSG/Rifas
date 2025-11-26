@@ -9,26 +9,13 @@ export const BoletaItem = ({ boleta, onSelect }: BoletaItemProps) => {
   const getEstadoClasses = () => {
     switch (boleta.estado) {
       case BoletaEstado.DISPONIBLE:
-        return 'bg-disponible hover:bg-green-600 cursor-pointer text-white';
+        return 'bg-white hover:bg-gray-50 border-2 border-gray-300 cursor-pointer text-gray-800 shadow-sm hover:shadow-md hover:border-teal-500';
       case BoletaEstado.RESERVADA:
-        return 'bg-reservada cursor-not-allowed text-white opacity-60';
+        return 'bg-gray-200 border-2 border-gray-300 cursor-not-allowed text-gray-500 opacity-60';
       case BoletaEstado.PAGADA:
-        return 'bg-pagada cursor-not-allowed text-white';
+        return 'bg-gradient-to-br from-red-500 to-red-600 border-2 border-red-700 cursor-not-allowed text-white shadow-md relative';
       default:
-        return 'bg-gray-300';
-    }
-  };
-
-  const getEstadoTexto = () => {
-    switch (boleta.estado) {
-      case BoletaEstado.DISPONIBLE:
-        return 'Disponible';
-      case BoletaEstado.RESERVADA:
-        return 'Reservada';
-      case BoletaEstado.PAGADA:
-        return 'Vendida';
-      default:
-        return '';
+        return 'bg-slate-300';
     }
   };
 
@@ -39,21 +26,23 @@ export const BoletaItem = ({ boleta, onSelect }: BoletaItemProps) => {
   };
 
   return (
-    <div
+    <button
       onClick={handleClick}
+      disabled={boleta.estado !== BoletaEstado.DISPONIBLE}
       className={`
-        flex flex-col items-center justify-center
-        p-4 rounded-lg transition-all duration-200
+        relative flex items-center justify-center
+        aspect-square rounded transition-all duration-200
         ${getEstadoClasses()}
-        ${boleta.estado === BoletaEstado.DISPONIBLE ? 'transform hover:scale-105 shadow-lg' : ''}
+        ${boleta.estado === BoletaEstado.DISPONIBLE 
+          ? 'transform hover:scale-105 active:scale-95' 
+          : ''
+        }
+        focus:outline-none focus:ring-2 focus:ring-teal-400
       `}
     >
-      <div className="text-2xl font-bold">
-        {String(boleta.numero).padStart(2, '0')}
-      </div>
-      <div className="text-xs mt-1 opacity-90">
-        {getEstadoTexto()}
-      </div>
-    </div>
+      <span className="text-[9px] sm:text-[10px] font-bold tabular-nums">
+        {boleta.numero}
+      </span>
+    </button>
   );
 };

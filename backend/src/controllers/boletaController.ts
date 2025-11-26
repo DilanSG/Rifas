@@ -27,6 +27,7 @@ export class BoletaController {
     try {
       const { numero } = req.params;
       const { nombre, telefono } = req.body;
+      const comprobante = (req as any).file; // Archivo subido con multer
 
       if (!nombre || !telefono) {
         return res.status(400).json({
@@ -61,13 +62,17 @@ export class BoletaController {
         });
       }
 
-      // Reservar por 10 minutos
-      const reservadaHasta = new Date();
-      reservadaHasta.setMinutes(reservadaHasta.getMinutes() + 10);
+      // Si hay comprobante, marcar como PAGADA, si no como RESERVADA
+      const nuevoEstado = comprobante ? BoletaEstado.PAGADA : BoletaEstado.RESERVADA;
 
-      boleta.estado = BoletaEstado.RESERVADA;
-      boleta.reservadaHasta = reservadaHasta;
+      boleta.estado = nuevoEstado;
       boleta.usuario = { nombre, telefono };
+      boleta.reservadaHasta = undefined; // Las reservas ahora son permanentes hasta que admin las libere
+      
+      // Guardar URL del comprobante si existe
+      if (comprobante) {
+        boleta.comprobanteUrl = `/uploads/${comprobante.filename}`;
+      }
       
       await boleta.save();
 
@@ -76,10 +81,11 @@ export class BoletaController {
         data: {
           numero: boleta.numero,
           estado: boleta.estado,
-          reservadaHasta: boleta.reservadaHasta,
-          precio: 10000
+          precio: 20000
         },
-        message: 'Boleta reservada exitosamente por 10 minutos'
+        message: comprobante 
+          ? 'Boleta marcada como PAGADA. Un administrador verificará el comprobante.'
+          : 'Boleta RESERVADA. Realiza la transferencia y actualiza con el comprobante.'
       });
     } catch (error) {
       console.error('Error al reservar boleta:', error);
@@ -174,6 +180,160 @@ export class BoletaController {
       res.status(500).json({
         success: false,
         message: 'Error al obtener estadísticas'
+      });
+    }
+  }
+
+  // Panel de administración (protegido por secreto)
+  static async obtenerBoletasAdmin(req: Request, res: Response) {
+    try {
+      const { secretKey } = req.params;
+      const adminSecret = process.env.ADMIN_SECRET_KEY || 'admin123';
+
+      // Verificar secreto
+      if (secretKey !== adminSecret) {
+        return res.status(403).json({
+          success: false,
+          message: 'Acceso denegado'
+        });
+      }
+
+      // Obtener boletas vendidas y reservadas con datos de usuario
+      const boletas = await Boleta.find({
+        estado: { $in: [BoletaEstado.RESERVADA, BoletaEstado.PAGADA] }
+      })
+        .sort({ numero: 1 })
+        .select('-__v');
+
+      res.json({
+        success: true,
+        data: boletas
+      });
+    } catch (error) {
+      console.error('Error al obtener boletas admin:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Error al obtener datos de administración'
+      });
+    }
+  }
+
+  // Marcar boleta como pagada (admin)
+  static async marcarComoPagada(req: Request, res: Response) {
+    try {
+      const { numero, secretKey } = req.params;
+      const adminSecret = process.env.ADMIN_SECRET_KEY || 'admin123';
+
+      if (secretKey !== adminSecret) {
+        return res.status(403).json({
+          success: false,
+          message: 'Acceso denegado'
+        });
+      }
+
+      const boleta = await Boleta.findOne({ numero: parseInt(numero) });
+      
+      if (!boleta) {
+        return res.status(404).json({
+          success: false,
+          message: 'Boleta no encontrada'
+        });
+      }
+
+      boleta.estado = BoletaEstado.PAGADA;
+      await boleta.save();
+
+      res.json({
+        success: true,
+        data: boleta,
+        message: 'Boleta marcada como PAGADA'
+      });
+    } catch (error) {
+      console.error('Error al marcar como pagada:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Error al actualizar boleta'
+      });
+    }
+  }
+
+  // Liberar reserva (admin)
+  static async liberarReserva(req: Request, res: Response) {
+    try {
+      const { numero, secretKey } = req.params;
+      const adminSecret = process.env.ADMIN_SECRET_KEY || 'admin123';
+
+      if (secretKey !== adminSecret) {
+        return res.status(403).json({
+          success: false,
+          message: 'Acceso denegado'
+        });
+      }
+
+      const boleta = await Boleta.findOne({ numero: parseInt(numero) });
+      
+      if (!boleta) {
+        return res.status(404).json({
+          success: false,
+          message: 'Boleta no encontrada'
+        });
+      }
+
+      boleta.estado = BoletaEstado.DISPONIBLE;
+      boleta.usuario = undefined;
+      boleta.reservadaHasta = undefined;
+      boleta.comprobanteUrl = undefined;
+      await boleta.save();
+
+      res.json({
+        success: true,
+        data: boleta,
+        message: 'Reserva liberada exitosamente'
+      });
+    } catch (error) {
+      console.error('Error al liberar reserva:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Error al liberar reserva'
+      });
+    }
+  }
+
+  // Cambiar estado de pagada a reservada (admin)
+  static async cambiarAReservada(req: Request, res: Response) {
+    try {
+      const { numero, secretKey } = req.params;
+      const adminSecret = process.env.ADMIN_SECRET_KEY || 'admin123';
+
+      if (secretKey !== adminSecret) {
+        return res.status(403).json({
+          success: false,
+          message: 'Acceso denegado'
+        });
+      }
+
+      const boleta = await Boleta.findOne({ numero: parseInt(numero) });
+      
+      if (!boleta) {
+        return res.status(404).json({
+          success: false,
+          message: 'Boleta no encontrada'
+        });
+      }
+
+      boleta.estado = BoletaEstado.RESERVADA;
+      await boleta.save();
+
+      res.json({
+        success: true,
+        data: boleta,
+        message: 'Boleta cambiada a RESERVADA'
+      });
+    } catch (error) {
+      console.error('Error al cambiar estado:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Error al actualizar boleta'
       });
     }
   }

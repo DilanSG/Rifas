@@ -1,8 +1,8 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
 import { connectDB } from './config/database';
-import { iniciarCronJobs } from './utils/cronJobs';
 
 // Rutas
 import boletaRoutes from './routes/boletaRoutes';
@@ -16,8 +16,15 @@ const app: Express = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
+
+const allowedOrigins: string[] = [
+  process.env.FRONTEND_URL,
+  'https://rifasg.vercel.app',
+  'http://localhost:5173'
+].filter((origin): origin is string => Boolean(origin));
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: allowedOrigins,
   credentials: true
 }));
 
@@ -27,6 +34,9 @@ app.use('/api/webhooks', express.raw({ type: 'application/json' }));
 // Para el resto, usar JSON
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Servir archivos estáticos (comprobantes)
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Rutas
 app.get('/', (req: Request, res: Response) => {
@@ -59,16 +69,13 @@ async function iniciarServidor() {
     // Conectar a MongoDB
     await connectDB();
     
-    // Iniciar cron jobs
-    iniciarCronJobs();
-    
     // Iniciar servidor
     app.listen(PORT, () => {
-      console.log(`\n🚀 Servidor corriendo en http://localhost:${PORT}`);
-      console.log(`📝 Documentación: http://localhost:${PORT}/\n`);
+      console.log(`\nServidor corriendo en http://localhost:${PORT}`);
+      console.log(`Documentación: http://localhost:${PORT}/\n`);
     });
   } catch (error) {
-    console.error('❌ Error al iniciar servidor:', error);
+    console.error('Error al iniciar servidor:', error);
     process.exit(1);
   }
 }

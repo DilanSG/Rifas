@@ -23,9 +23,25 @@ export const boletaService = {
     return response.data.data;
   },
 
-  // Reservar una boleta
-  reservarBoleta: async (numero: number, datos: ReservaRequest) => {
-    const response = await api.post(`/boletas/${numero}/reservar`, datos);
+  // Reservar una boleta con comprobante opcional
+  reservarBoleta: async (numero: number, datos: ReservaRequest, comprobante?: File) => {
+    const formData = new FormData();
+    formData.append('nombre', datos.nombre);
+    formData.append('telefono', datos.telefono);
+    
+    if (comprobante) {
+      formData.append('comprobante', comprobante);
+    }
+
+    const response = await axios.post(
+      `${API_URL}/boletas/${numero}/reservar`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
     return response.data;
   },
 
@@ -34,12 +50,30 @@ export const boletaService = {
     const response = await api.get('/boletas/estadisticas');
     return response.data.data;
   },
+
+  // Admin: Marcar como pagada
+  marcarComoPagada: async (numero: number, secretKey: string) => {
+    const response = await api.post(`/boletas/admin/${secretKey}/${numero}/marcar-pagada`);
+    return response.data;
+  },
+
+  // Admin: Liberar reserva
+  liberarReserva: async (numero: number, secretKey: string) => {
+    const response = await api.post(`/boletas/admin/${secretKey}/${numero}/liberar-reserva`);
+    return response.data;
+  },
+
+  // Admin: Cambiar a reservada
+  cambiarAReservada: async (numero: number, secretKey: string) => {
+    const response = await api.post(`/boletas/admin/${secretKey}/${numero}/cambiar-reservada`);
+    return response.data;
+  },
 };
 
 export const pagoService = {
-  // Crear intención de pago
-  crearPago: async (datos: PagoRequest) => {
-    const response = await api.post('/pagos/crear', datos);
+  // Crear preferencia de pago con Mercado Pago
+  crearPreferencia: async (datos: PagoRequest) => {
+    const response = await api.post('/pagos/crear-preferencia', datos);
     return response.data;
   },
 

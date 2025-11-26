@@ -3,7 +3,7 @@ import { PagoController } from '../controllers/pagoController';
 
 const router = Router();
 
-// POST /api/webhooks/wompi - Webhook de Wompi
-router.post('/wompi', PagoController.procesarWebhook);
+// POST /api/webhooks/mercadopago - Webhook de Mercado Pago
+router.post('/mercadopago', PagoController.procesarWebhook);
 
 export default router;
