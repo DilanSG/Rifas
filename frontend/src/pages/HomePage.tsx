@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Info, X } from 'lucide-react';
 import { Boleta } from '../types';
 import { boletaService } from '../services/api';
 import { BoletaItem } from '../components/BoletaItem';
@@ -8,6 +8,7 @@ import { ModalPago } from '../components/ModalPago';
 export const HomePage = () => {
   const [boletas, setBoletas] = useState<Boleta[]>([]);
   const [boletaSeleccionada, setBoletaSeleccionada] = useState<number | null>(null);
+  const [mostrarInfo, setMostrarInfo] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -76,6 +77,78 @@ export const HomePage = () => {
       <div className="max-w-md w-full relative z-10">
         {/* Card principal con fondo oscuro */}
         <div className="bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden border border-gray-700/50">
+          {/* Botón de información en la esquina superior izquierda */}
+          <button
+            onClick={() => setMostrarInfo(!mostrarInfo)}
+            className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 bg-transparent hover:bg-white/10 text-white rounded-full p-2 transition-all duration-200 hover:scale-110"
+            aria-label="Información de compra"
+          >
+            <Info className="w-4 h-4 sm:w-5 sm:h-5" />
+          </button>
+
+          {/* Modal de instrucciones */}
+          {mostrarInfo && (
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm z-30 rounded-2xl sm:rounded-3xl flex items-center justify-center p-4">
+              <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl max-w-sm w-full p-4 sm:p-6 relative border border-gray-700">
+                <button
+                  onClick={() => setMostrarInfo(false)}
+                  className="absolute top-2 right-2 text-gray-400 hover:text-white transition-colors"
+                  aria-label="Cerrar"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+                
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                  <Info className="w-6 h-6 text-blue-500" />
+                  ¿Cómo comprar?
+                </h3>
+                
+                <div className="space-y-3 text-gray-200 text-sm">
+                  <div className="flex gap-3">
+                    <div className="flex-shrink-0 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
+                      1
+                    </div>
+                    <p><strong>Elige tu número:</strong> Selecciona una boleta disponible (en blanco) del tablero.</p>
+                  </div>
+                  
+                  <div className="flex gap-3">
+                    <div className="flex-shrink-0 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
+                      2
+                    </div>
+                    <p><strong>Completa tus datos:</strong> Ingresa tu nombre y teléfono en el formulario.</p>
+                  </div>
+                  
+                  <div className="flex gap-3">
+                    <div className="flex-shrink-0 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
+                      3
+                    </div>
+                    <p><strong>Realiza el pago:</strong> Transfiere al número <span className="font-bold text-white">3105572015</span> (Dilan Acuña).</p>
+                  </div>
+                  
+                  <div className="flex gap-3">
+                    <div className="flex-shrink-0 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
+                      4
+                    </div>
+                    <p><strong>Adjunta comprobante:</strong> Si subes el comprobante, tu boleta se marca como <span className="text-green-400 font-semibold">comprada</span>. Si no lo adjuntas, quedará <span className="text-yellow-400 font-semibold">reservada</span> temporalmente.</p>
+                  </div>
+                  
+                  <div className="flex gap-3">
+                    <div className="flex-shrink-0 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
+                      ✓
+                    </div>
+                    <p><strong>¡Listo!</strong> Tu boleta será confirmada y aparecerá marcada. ¡Mucha suerte!</p>
+                  </div>
+                </div>
+                
+                <div className="mt-4 pt-4 border-t border-gray-700">
+                  <p className="text-xs text-gray-400 text-center">
+                    El sorteo es el <strong className="text-white">20 de Diciembre 2025</strong> con la Lotería de Boyacá
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Header con título y premio */}
           <div className="text-center pt-4 sm:pt-8 pb-4 sm:pb-6 px-4 sm:px-6 relative">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-2 sm:mb-3">
