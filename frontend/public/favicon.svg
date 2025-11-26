@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 768" fill="none">
+  <rect width="768" height="768" fill="#2C3E50"/>
+  <g transform="translate(384, 384)">
+    <!-- Base de la ruleta -->
+    <rect x="-320" y="220" width="640" height="60" rx="30" fill="#34495E"/>
+    
+    <!-- Círculo exterior de la ruleta -->
+    <circle cx="0" cy="0" r="280" fill="none" stroke="#34495E" stroke-width="40"/>
+    
+    <!-- Segmentos de la ruleta -->
+    <g id="segments">
+      <!-- Segmento 1 -->
+      <path d="M 0,-240 A 240,240 0 0,1 207.846,-120 L 0,0 Z" fill="#ECF0F1"/>
+      <!-- Segmento 2 -->
+      <path d="M 207.846,-120 A 240,240 0 0,1 207.846,120 L 0,0 Z" fill="#ECF0F1"/>
+      <!-- Segmento 3 -->
+      <path d="M 207.846,120 A 240,240 0 0,1 0,240 L 0,0 Z" fill="#ECF0F1"/>
+      <!-- Segmento 4 -->
+      <path d="M 0,240 A 240,240 0 0,1 -207.846,120 L 0,0 Z" fill="#ECF0F1"/>
+      <!-- Segmento 5 -->
+      <path d="M -207.846,120 A 240,240 0 0,1 -207.846,-120 L 0,0 Z" fill="#ECF0F1"/>
+      <!-- Segmento 6 -->
+      <path d="M -207.846,-120 A 240,240 0 0,1 0,-240 L 0,0 Z" fill="#ECF0F1"/>
+      
+      <!-- Segmentos oscuros alternados -->
+      <path d="M 120.077,-207.846 A 240,240 0 0,1 240,0 L 0,0 Z" fill="#34495E"/>
+      <path d="M 240,0 A 240,240 0 0,1 120.077,207.846 L 0,0 Z" fill="#34495E"/>
+      <path d="M 120.077,207.846 A 240,240 0 0,1 -120.077,207.846 L 0,0 Z" fill="#34495E"/>
+      <path d="M -120.077,207.846 A 240,240 0 0,1 -240,0 L 0,0 Z" fill="#34495E"/>
+      <path d="M -240,0 A 240,240 0 0,1 -120.077,-207.846 L 0,0 Z" fill="#34495E"/>
+      <path d="M -120.077,-207.846 A 240,240 0 0,1 120.077,-207.846 L 0,0 Z" fill="#34495E"/>
+    </g>
+    
+    <!-- Decoraciones en los segmentos -->
+    <circle cx="-150" cy="-90" r="25" fill="#34495E"/>
+    <circle cx="150" cy="90" r="25" fill="#34495E"/>
+    
+    <!-- Estrella -->
+    <g transform="translate(100, -170)">
+      <path d="M 0,-25 L 7,-7 L 25,-7 L 10,5 L 15,22 L 0,12 L -15,22 L -10,5 L -25,-7 L -7,-7 Z" fill="#34495E"/>
+    </g>
+    
+    <!-- Cuadrado -->
+    <g transform="translate(170, 60)">
+      <rect x="-18" y="-18" width="36" height="36" fill="#34495E"/>
+    </g>
+    
+    <!-- Centro de la ruleta -->
+    <circle cx="0" cy="0" r="80" fill="#ECF0F1"/>
+    <circle cx="0" cy="0" r="50" fill="#2C3E50"/>
+    
+    <!-- Flecha apuntadora -->
+    <g transform="translate(0, -260) rotate(0)">
+      <path d="M 0,0 L 30,50 L 0,35 L -30,50 Z" fill="#34495E"/>
+      <path d="M 0,35 L 18,180 L -18,180 Z" fill="#34495E"/>
+    </g>
+  </g>
+</svg>
