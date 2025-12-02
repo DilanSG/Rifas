@@ -3,7 +3,7 @@ import { X, CreditCard, User, Phone, Loader2, Upload, ImageIcon } from 'lucide-r
 import { Notification, NotificationType } from './Notification';
 
 interface ModalPagoProps {
-  boletaNumero: number;
+  boletaNumero: string;
   onClose: () => void;
   onConfirmar: (nombre: string, telefono: string, comprobante?: File) => Promise<any>;
 }
