@@ -12,7 +12,9 @@ build/
 .env
 .env.local
 .env.production
-*/.env
+.env.production.local
+.env.test
+*/.env  
 */.env.local
 */.env.production
 

@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface ISorteo {
   finalizado: boolean;
   numeroGanador?: string;
+  numeroLoteriaCompleto?: string;
   fechaFinalizacion?: Date;
 }
 
@@ -18,6 +19,10 @@ const sorteoSchema = new Schema<ISorteoDocument>(
     numeroGanador: {
       type: String,
       match: /^\d{2}$/  // Validar formato 00-99
+    },
+    numeroLoteriaCompleto: {
+      type: String,
+      match: /^\d{4}$/  // Validar formato 0000-9999
     },
     fechaFinalizacion: {
       type: Date

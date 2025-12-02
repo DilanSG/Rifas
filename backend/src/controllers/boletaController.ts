@@ -446,6 +446,7 @@ export class BoletaController {
           resultados,
           sorteoFinalizado: sorteo?.finalizado || false,
           numeroGanador: sorteo?.numeroGanador,
+          numeroLoteriaCompleto: sorteo?.numeroLoteriaCompleto,
           fechaFinalizacion: sorteo?.fechaFinalizacion,
           ganador: ganadorData
         }
@@ -473,6 +474,7 @@ export class BoletaController {
         data: {
           finalizado: sorteo.finalizado,
           numeroGanador: sorteo.numeroGanador,
+          numeroLoteriaCompleto: sorteo.numeroLoteriaCompleto,
           fechaFinalizacion: sorteo.fechaFinalizacion
         }
       });
@@ -489,7 +491,7 @@ export class BoletaController {
   static async finalizarSorteo(req: Request, res: Response) {
     try {
       const { secretKey } = req.params;
-      const { numeroGanador } = req.body;
+      const { numeroGanador, numeroLoteriaCompleto } = req.body;
 
       // Verificar clave secreta
       if (secretKey !== process.env.ADMIN_SECRET_KEY) {
@@ -504,6 +506,14 @@ export class BoletaController {
         return res.status(400).json({
           success: false,
           message: 'Número ganador inválido (debe ser 00-99)'
+        });
+      }
+
+      // Validar número completo de lotería (formato 0000-9999)
+      if (numeroLoteriaCompleto && !/^\d{4}$/.test(numeroLoteriaCompleto)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Número de lotería inválido (debe ser 4 dígitos)'
         });
       }
 
@@ -523,6 +533,7 @@ export class BoletaController {
 
       sorteo.finalizado = true;
       sorteo.numeroGanador = numeroGanador;
+      sorteo.numeroLoteriaCompleto = numeroLoteriaCompleto;
       sorteo.fechaFinalizacion = new Date();
       await sorteo.save();
 
@@ -534,6 +545,7 @@ export class BoletaController {
         message: 'Sorteo finalizado exitosamente',
         data: {
           numeroGanador: sorteo.numeroGanador,
+          numeroLoteriaCompleto: sorteo.numeroLoteriaCompleto,
           fechaFinalizacion: sorteo.fechaFinalizacion
         }
       });
