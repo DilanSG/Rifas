@@ -28,8 +28,9 @@ export const AdminPage = () => {
   const [comprobanteModal, setComprobanteModal] = useState<string | null>(null);
   const [sorteoFinalizado, setSorteoFinalizado] = useState(false);
   const [numeroGanador, setNumeroGanador] = useState<string | null>(null);
+  const [numeroLoteriaCompleto, setNumeroLoteriaCompleto] = useState<string | null>(null);
   const [mostrarModalSorteo, setMostrarModalSorteo] = useState(false);
-  const [numeroGanadorInput, setNumeroGanadorInput] = useState('');
+  const [numeroLoteriaInput, setNumeroLoteriaInput] = useState('');
 
   useEffect(() => {
     cargarBoletasAdmin();
@@ -42,6 +43,7 @@ export const AdminPage = () => {
       if (response.success) {
         setSorteoFinalizado(response.data.finalizado);
         setNumeroGanador(response.data.numeroGanador || null);
+        setNumeroLoteriaCompleto(response.data.numeroLoteriaCompleto || null);
       }
     } catch (err) {
       console.error('Error al verificar sorteo:', err);
@@ -156,26 +158,30 @@ export const AdminPage = () => {
   const handleFinalizarSorteo = async () => {
     if (!secretKey) return;
     
-    const numero = numeroGanadorInput.trim();
+    const numeroCompleto = numeroLoteriaInput.trim();
     
-    // Validar formato 00-99
-    if (!/^\d{2}$/.test(numero)) {
-      alert('Por favor ingresa un número válido en formato 00-99');
+    // Validar formato 0000-9999 (4 dígitos)
+    if (!/^\d{4}$/.test(numeroCompleto)) {
+      alert('Por favor ingresa un número válido de 4 dígitos (ejemplo: 3842)');
       return;
     }
 
-    if (!confirm(`¿Finalizar el sorteo con el número ganador ${numero}? Esta acción no se puede deshacer.`)) {
+    // Extraer los 2 últimos dígitos
+    const dosUltimosDigitos = numeroCompleto.slice(-2);
+
+    if (!confirm(`¿Finalizar el sorteo con el número de lotería ${numeroCompleto}?\nNúmero ganador (2 últimos dígitos): ${dosUltimosDigitos}\nEsta acción no se puede deshacer.`)) {
       return;
     }
 
     setProcesando('sorteo');
     try {
-      const response = await boletaService.finalizarSorteo(secretKey, numero);
+      const response = await boletaService.finalizarSorteo(secretKey, dosUltimosDigitos, numeroCompleto);
       if (response.success) {
         setSorteoFinalizado(true);
-        setNumeroGanador(numero);
+        setNumeroGanador(dosUltimosDigitos);
+        setNumeroLoteriaCompleto(numeroCompleto);
         setMostrarModalSorteo(false);
-        setNumeroGanadorInput('');
+        setNumeroLoteriaInput('');
         alert('¡Sorteo finalizado exitosamente!');
       }
     } catch (err: any) {
@@ -263,7 +269,15 @@ export const AdminPage = () => {
                 <Trophy className="w-8 h-8 text-gray-900" />
                 <h3 className="text-2xl font-black text-gray-900">Sorteo Finalizado</h3>
               </div>
-              <p className="text-gray-900 text-center text-lg mb-2">Número Ganador:</p>
+              {numeroLoteriaCompleto && (
+                <div className="bg-gray-900/20 rounded-lg p-3 mb-3">
+                  <p className="text-gray-900 text-center text-sm font-semibold mb-1">
+                    Número de Lotería de Boyacá:
+                  </p>
+                  <p className="text-3xl font-black text-gray-900 text-center">{numeroLoteriaCompleto}</p>
+                </div>
+              )}
+              <p className="text-gray-900 text-center text-lg mb-2">Número Ganador (2 últimos dígitos):</p>
               <p className="text-6xl font-black text-gray-900 text-center">{numeroGanador}</p>
               <p className="text-gray-800 text-sm mt-4 text-center">
                 Los usuarios verán los resultados automáticamente en la página principal
@@ -523,22 +537,27 @@ export const AdminPage = () => {
 
               <div className="mb-6">
                 <label className="block text-white font-medium mb-2">
-                  Número Ganador (00-99)
+                  Número de Lotería de Boyacá (4 dígitos)
                 </label>
                 <input
                   type="text"
-                  maxLength={2}
-                  pattern="\d{2}"
-                  value={numeroGanadorInput}
-                  onChange={(e) => setNumeroGanadorInput(e.target.value)}
+                  maxLength={4}
+                  pattern="\d{4}"
+                  value={numeroLoteriaInput}
+                  onChange={(e) => setNumeroLoteriaInput(e.target.value.replace(/\D/g, ''))}
                   className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 outline-none text-2xl font-bold text-center"
-                  placeholder="00"
+                  placeholder="0000"
                 />
+                {numeroLoteriaInput.length === 4 && (
+                  <p className="text-green-400 text-sm mt-2 text-center">
+                    Número ganador (2 últimos dígitos): <span className="font-bold text-lg">{numeroLoteriaInput.slice(-2)}</span>
+                  </p>
+                )}
               </div>
 
               <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-4 mb-6">
                 <p className="text-yellow-200 text-sm">
-                  ⚠️ Esta acción no se puede deshacer. Asegúrate de ingresar el número ganador correcto.
+                  ⚠️ Esta acción no se puede deshacer. Ingresa el número completo de 4 dígitos de la Lotería de Boyacá. Se tomará como ganador los 2 últimos dígitos.
                 </p>
               </div>
 

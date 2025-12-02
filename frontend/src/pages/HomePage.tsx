@@ -123,85 +123,108 @@ export const HomePage = () => {
 
           {/* Modal de instrucciones */}
           {mostrarInfo && (
-            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm z-30 rounded-2xl sm:rounded-3xl flex items-center justify-center p-4">
-              <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl max-w-sm w-full p-4 sm:p-6 relative border border-gray-700">
-                <button
-                  onClick={() => setMostrarInfo(false)}
-                  className="absolute top-2 right-2 text-gray-400 hover:text-white transition-colors"
-                  aria-label="Cerrar"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-                
-                <h3 className="text-xl sm:text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                  <Info className="w-6 h-6 text-blue-500" />
-                  ¿Cómo comprar?
-                </h3>
-                
-                <div className="space-y-3 text-gray-200 text-sm">
-                  <div className="flex gap-3">
-                    <div className="flex-shrink-0 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
-                      1
-                    </div>
-                    <p><strong>Elige tu número:</strong> Selecciona una boleta disponible (en blanco) del tablero.</p>
-                  </div>
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4">
+              <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg sm:rounded-xl max-w-lg w-full relative border border-gray-700 my-4 max-h-[95vh] overflow-hidden flex flex-col">
+                <div className="flex-shrink-0 p-4 sm:p-6 pb-3">
+                  <button
+                    onClick={() => setMostrarInfo(false)}
+                    className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-10 bg-gray-800 rounded-full p-1"
+                    aria-label="Cerrar"
+                  >
+                    <X className="w-5 h-5 sm:w-6 sm:h-6" />
+                  </button>
                   
-                  <div className="flex gap-3">
-                    <div className="flex-shrink-0 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
-                      2
-                    </div>
-                    <p><strong>Completa tus datos:</strong> Ingresa tu nombre y teléfono en el formulario.</p>
-                  </div>
-                  
-                  <div className="flex gap-3">
-                    <div className="flex-shrink-0 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
-                      3
-                    </div>
-                    <p><strong>Realiza el pago:</strong> Transfiere al número <span className="font-bold text-white">3105572015</span> (Dilan Acuña).</p>
-                  </div>
-                  
-                  <div className="flex gap-3">
-                    <div className="flex-shrink-0 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
-                      4
-                    </div>
-                    <p><strong>Adjunta comprobante:</strong> Si subes el comprobante, tu boleta se marca como <span className="text-green-400 font-semibold">comprada</span>. Si no lo adjuntas, quedará <span className="text-yellow-400 font-semibold">reservada</span> temporalmente.</p>
-                  </div>
-                  
-                  <div className="flex gap-3">
-                    <div className="flex-shrink-0 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xs">
-                      5
-                    </div>
-                    <p><strong>¡Listo!</strong> Tu boleta será confirmada y aparecerá marcada. ¡Mucha suerte!</p>
-                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2 pr-12">
+                    <Info className="w-6 h-6 sm:w-7 sm:h-7 text-blue-500 flex-shrink-0" />
+                    <span>¿Cómo comprar?</span>
+                  </h3>
                 </div>
                 
-                <div className="mt-4 pt-4 border-t border-gray-700">
-                  <div className="bg-gradient-to-r from-green-900/40 to-emerald-900/40 border border-green-500/30 rounded-xl p-3 mb-3">
-                    <div className="flex items-start gap-2">
-                      <div className="flex-shrink-0 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                        </svg>
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-bold text-green-300 mb-1 text-xs">Seguridad Garantizada</p>
-                        <p className="text-[11px] text-green-200 leading-relaxed">
-                          Todos tus datos están protegidos en nuestra base de datos. No habrá cambios ni errores en la información de compra. 
-                          Al finalizar el sorteo, la página mostrará ciertos datos de hora, fecha y comprador de cada número para total transparencia.
-                        </p>
-                      </div>
+                <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-4 sm:pb-6 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 hover:scrollbar-thumb-gray-500">
+                  <div className="space-y-3 sm:space-y-4 text-gray-200 text-sm sm:text-base">
+                    <div className="flex gap-3 sm:gap-4">
+                    <div className="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm">
+                      1
+                    </div>
+                    <p className="leading-relaxed"><strong>Elige tu número:</strong> Selecciona una boleta disponible (en blanco) del tablero.</p>
+                  </div>
+                  
+                  <div className="flex gap-3 sm:gap-4">
+                    <div className="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm">
+                      2
+                    </div>
+                    <p className="leading-relaxed"><strong>Completa tus datos:</strong> Ingresa tu nombre y teléfono en el formulario.</p>
+                  </div>
+                  
+                  <div className="flex gap-3 sm:gap-4">
+                    <div className="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm">
+                      3
+                    </div>
+                    <p className="leading-relaxed"><strong>Realiza el pago:</strong> Transfiere al número <span className="font-bold text-white">3105572015</span> (Dilan Acuña).</p>
+                  </div>
+                  
+                  <div className="flex gap-3 sm:gap-4">
+                    <div className="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm">
+                      4
+                    </div>
+                    <p className="leading-relaxed"><strong>Adjunta comprobante:</strong> Si subes el comprobante, tu boleta se marca como <span className="text-green-400 font-semibold">comprada</span>. Si no lo adjuntas, quedará <span className="text-yellow-400 font-semibold">reservada</span> temporalmente y el responsable se contactara contigo para confirmar la compra una semana antes del sorteo.</p>
+                  </div>
+                  
+                  <div className="flex gap-3 sm:gap-4">
+                    <div className="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm">
+                      5
+                    </div>
+                    <p className="leading-relaxed"><strong>¡Listo!</strong> Cuando tu boleta sea confirmada aparecerá marcada en verde como valida para el sorteo. ¡Mucha suerte!</p>
+                  </div>
+                  
+                  <div className="flex gap-3 sm:gap-4">
+                    <div className="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 bg-yellow-500 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm">
+                      6
+                    </div>
+                    <div>
+                      <p className="mb-2 sm:mb-3 leading-relaxed">
+                        <strong>Resultados del sorteo:</strong> El 20 de diciembre, esta página se actualizará automáticamente 
+                        mostrando el número ganador y los datos de todas las boletas vendidas para total transparencia.
+                      </p>
+                      <button 
+                        onClick={() => navigate('/ejemplo-resultados')}
+                        className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors"
+                      >
+                        Ver ejemplo de resultados →
+                      </button>
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-center gap-2 text-gray-400">
-                    <Calendar className="w-3 h-3" />
-                    <p className="text-xs">
-                      Sorteo: <strong className="text-white">20 de Diciembre 2025</strong> con la Lotería de Boyacá
-                    </p>
+                  
+                  <div className="mt-4 sm:mt-5 pt-4 sm:pt-5 border-t border-gray-700">
+                    <div className="bg-gradient-to-r from-green-900/40 to-emerald-900/40 border border-green-500/30 rounded-lg sm:rounded-xl p-3 sm:p-4 mb-3 sm:mb-4">
+                      <div className="flex items-start gap-2 sm:gap-3">
+                        <div className="flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 bg-green-500 rounded-full flex items-center justify-center">
+                          <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                          </svg>
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-bold text-green-300 mb-1 text-xs sm:text-sm">Seguridad Garantizada</p>
+                          <p className="text-xs sm:text-sm text-green-200 leading-relaxed">
+                            Todos tus datos están protegidos en nuestra base de datos. No habrá cambios ni errores en la información de compra. 
+                            Al finalizar el sorteo, la página mostrará ciertos datos de hora, fecha y comprador de cada número para total transparencia.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-center gap-2 text-gray-400">
+                      <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <p className="text-xs sm:text-sm">
+                        Sorteo: <strong className="text-white">20 de Diciembre 2025</strong> con la Lotería de Boyacá
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
           )}
 
           {/* Header con título y premio */}
