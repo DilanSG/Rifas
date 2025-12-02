@@ -2,7 +2,7 @@ import { Boleta as BoletaType, BoletaEstado } from '../types';
 
 interface BoletaItemProps {
   boleta: BoletaType;
-  onSelect: (numero: number) => void;
+  onSelect: (numero: string) => void;
 }
 
 export const BoletaItem = ({ boleta, onSelect }: BoletaItemProps) => {

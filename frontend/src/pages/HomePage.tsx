@@ -8,7 +8,7 @@ import { ResultadosPage } from './ResultadosPage';
 
 export const HomePage = () => {
   const [boletas, setBoletas] = useState<Boleta[]>([]);
-  const [boletaSeleccionada, setBoletaSeleccionada] = useState<number | null>(null);
+  const [boletaSeleccionada, setBoletaSeleccionada] = useState<string | null>(null);
   const [mostrarInfo, setMostrarInfo] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +49,7 @@ export const HomePage = () => {
     }
   };
 
-  const handleSeleccionarBoleta = (numero: number) => {
+  const handleSeleccionarBoleta = (numero: string) => {
     setBoletaSeleccionada(numero);
   };
 
@@ -63,7 +63,7 @@ export const HomePage = () => {
     try {
       // Reservar la boleta con los datos del usuario y comprobante opcional
       await boletaService.reservarBoleta(
-        boletaSeleccionada.toString(), 
+        boletaSeleccionada, 
         { nombre, telefono },
         comprobante
       );
