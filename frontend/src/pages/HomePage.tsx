@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Loader2, Info, X, Calendar } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Loader2, Info, X, Calendar, Lock } from 'lucide-react';
 import { Boleta } from '../types';
 import { boletaService } from '../services/api';
 import { BoletaItem } from '../components/BoletaItem';
@@ -7,12 +8,15 @@ import { ModalPago } from '../components/ModalPago';
 import { ResultadosPage } from './ResultadosPage';
 
 export const HomePage = () => {
+  const navigate = useNavigate();
   const [boletas, setBoletas] = useState<Boleta[]>([]);
   const [boletaSeleccionada, setBoletaSeleccionada] = useState<string | null>(null);
   const [mostrarInfo, setMostrarInfo] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sorteoFinalizado, setSorteoFinalizado] = useState(false);
+  const [mostrarModalAdmin, setMostrarModalAdmin] = useState(false);
+  const [secretKeyInput, setSecretKeyInput] = useState('');
 
   useEffect(() => {
     cargarDatos();
@@ -75,6 +79,14 @@ export const HomePage = () => {
     } catch (err: any) {
       console.error('Error:', err);
       throw err;
+    }
+  };
+
+  const handleAccesoAdmin = () => {
+    if (secretKeyInput.trim()) {
+      navigate(`/admin/${secretKeyInput}`);
+      setMostrarModalAdmin(false);
+      setSecretKeyInput('');
     }
   };
 
@@ -234,7 +246,12 @@ export const HomePage = () => {
                 <p className="text-white font-bold text-xs sm:text-sm">Valor: $20.000</p>
                 <p className="text-gray-400 mb-0.5 text-[10px] sm:text-xs">Transferencias al:</p>
                 <p className="text-white font-bold text-xs sm:text-sm">3105572015</p>
-                <p className="text-gray-300 text-[9px] sm:text-[10px]">Responsable Dilan Acuña</p>
+                <p 
+                  className="text-gray-300 text-[9px] sm:text-[10px] cursor-pointer transition-colors"
+                  onClick={() => setMostrarModalAdmin(true)}
+                  >
+                  Responsable Dilan Acuña
+                </p>
               </div>
               <div className="text-right">
                 <p className="text-gray-400 mb-0.5 text-[10px] sm:text-xs">Juega el:</p>
@@ -253,6 +270,63 @@ export const HomePage = () => {
           onClose={handleCerrarModal}
           onConfirmar={handleConfirmarPago}
         />
+      )}
+
+      {/* Modal de Acceso Admin */}
+      {mostrarModalAdmin && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-30 rounded-2xl sm:rounded-3xl flex items-center justify-center p-4">
+          <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl max-w-sm w-full p-4 sm:p-6 relative border border-gray-700">
+            <button
+              onClick={() => {
+                setMostrarModalAdmin(false);
+                setSecretKeyInput('');
+              }}
+              className="absolute top-2 right-2 text-gray-400 hover:text-white transition-colors"
+              aria-label="Cerrar"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <h3 className="text-xl sm:text-2xl font-bold text-white mb-4 flex items-center gap-2">
+              <Lock className="w-6 h-6 text-blue-500" />
+              Acceso Administrativo
+            </h3>
+
+            <div className="mb-4">
+              <label className="block text-gray-300 font-medium mb-2 text-sm">
+                Clave Secreta
+              </label>
+              <input
+                type="password"
+                value={secretKeyInput}
+                onChange={(e) => setSecretKeyInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleAccesoAdmin()}
+                className="w-full px-4 py-3 bg-gray-700/50 border-2 border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none text-white font-mono placeholder-gray-400"
+                placeholder="Ingresa la clave de acceso"
+                autoFocus
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setMostrarModalAdmin(false);
+                  setSecretKeyInput('');
+                }}
+                className="flex-1 px-4 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleAccesoAdmin}
+                disabled={!secretKeyInput.trim()}
+                className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Acceder
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
