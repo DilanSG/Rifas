@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Loader2, AlertCircle, CheckCircle, Clock, User, Phone, Hash, Calendar, Image as ImageIcon, XCircle, Check } from 'lucide-react';
+import { Loader2, AlertCircle, CheckCircle, Clock, User, Phone, Hash, Calendar, Image as ImageIcon, XCircle, Check, Trophy } from 'lucide-react';
 import axios from 'axios';
 import { boletaService } from '../services/api';
 
 interface BoletaAdmin {
   _id: string;
-  numero: number;
+  numero: string;
   estado: 'disponible' | 'reservada' | 'pagada';
   usuario?: {
     nombre: string;
@@ -24,12 +24,29 @@ export const AdminPage = () => {
   const [boletas, setBoletas] = useState<BoletaAdmin[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [procesando, setProcesando] = useState<number | null>(null);
+  const [procesando, setProcesando] = useState<string | null>(null);
   const [comprobanteModal, setComprobanteModal] = useState<string | null>(null);
+  const [sorteoFinalizado, setSorteoFinalizado] = useState(false);
+  const [numeroGanador, setNumeroGanador] = useState<string | null>(null);
+  const [mostrarModalSorteo, setMostrarModalSorteo] = useState(false);
+  const [numeroGanadorInput, setNumeroGanadorInput] = useState('');
 
   useEffect(() => {
     cargarBoletasAdmin();
+    verificarEstadoSorteo();
   }, [secretKey]);
+
+  const verificarEstadoSorteo = async () => {
+    try {
+      const response = await boletaService.verificarSorteo();
+      if (response.success) {
+        setSorteoFinalizado(response.data.finalizado);
+        setNumeroGanador(response.data.numeroGanador || null);
+      }
+    } catch (err) {
+      console.error('Error al verificar sorteo:', err);
+    }
+  };
 
   const cargarBoletasAdmin = async () => {
     if (!secretKey) {
@@ -89,7 +106,7 @@ export const AdminPage = () => {
     });
   };
 
-  const handleMarcarPagada = async (numero: number) => {
+  const handleMarcarPagada = async (numero: string) => {
     if (!secretKey) return;
     
     setProcesando(numero);
@@ -104,7 +121,7 @@ export const AdminPage = () => {
     }
   };
 
-  const handleLiberarReserva = async (numero: number) => {
+  const handleLiberarReserva = async (numero: string) => {
     if (!secretKey) return;
     if (!confirm(`¿Estás seguro de liberar la boleta #${numero}?`)) return;
     
@@ -120,7 +137,7 @@ export const AdminPage = () => {
     }
   };
 
-  const handleCambiarAReservada = async (numero: number) => {
+  const handleCambiarAReservada = async (numero: string) => {
     if (!secretKey) return;
     if (!confirm(`¿Cambiar boleta #${numero} a RESERVADA? (comprobante no válido)`)) return;
     
@@ -130,6 +147,39 @@ export const AdminPage = () => {
       await cargarBoletasAdmin();
     } catch (err) {
       alert('Error al cambiar estado');
+      console.error(err);
+    } finally {
+      setProcesando(null);
+    }
+  };
+
+  const handleFinalizarSorteo = async () => {
+    if (!secretKey) return;
+    
+    const numero = numeroGanadorInput.trim();
+    
+    // Validar formato 00-99
+    if (!/^\d{2}$/.test(numero)) {
+      alert('Por favor ingresa un número válido en formato 00-99');
+      return;
+    }
+
+    if (!confirm(`¿Finalizar el sorteo con el número ganador ${numero}? Esta acción no se puede deshacer.`)) {
+      return;
+    }
+
+    setProcesando('sorteo');
+    try {
+      const response = await boletaService.finalizarSorteo(secretKey, numero);
+      if (response.success) {
+        setSorteoFinalizado(true);
+        setNumeroGanador(numero);
+        setMostrarModalSorteo(false);
+        setNumeroGanadorInput('');
+        alert('¡Sorteo finalizado exitosamente!');
+      }
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Error al finalizar sorteo');
       console.error(err);
     } finally {
       setProcesando(null);
@@ -203,6 +253,42 @@ export const AdminPage = () => {
               <Clock className="w-12 h-12 text-yellow-400" />
             </div>
           </div>
+        </div>
+
+        {/* Estado del Sorteo y Acciones */}
+        <div className="mb-6">
+          {sorteoFinalizado && numeroGanador ? (
+            <div className="bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-500 rounded-xl p-6 border-4 border-yellow-300 shadow-2xl">
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <Trophy className="w-8 h-8 text-gray-900" />
+                <h3 className="text-2xl font-black text-gray-900">Sorteo Finalizado</h3>
+              </div>
+              <p className="text-gray-900 text-center text-lg mb-2">Número Ganador:</p>
+              <p className="text-6xl font-black text-gray-900 text-center">{numeroGanador}</p>
+              <p className="text-gray-800 text-sm mt-4 text-center">
+                Los usuarios verán los resultados automáticamente en la página principal
+              </p>
+            </div>
+          ) : (
+            <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 border border-blue-500/30 rounded-xl p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-1">Finalizar Sorteo</h3>
+                  <p className="text-blue-200 text-sm">
+                    Ingresa el número ganador para finalizar el sorteo
+                  </p>
+                </div>
+                <button
+                  onClick={() => setMostrarModalSorteo(true)}
+                  disabled={procesando !== null}
+                  className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors disabled:opacity-50 flex items-center gap-2"
+                >
+                  <Trophy className="w-5 h-5" />
+                  Finalizar
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Tabla de boletas */}
@@ -416,6 +502,72 @@ export const AdminPage = () => {
                 alt="Comprobante de pago" 
                 className="w-full h-auto rounded-lg shadow-2xl"
               />
+            </div>
+          </div>
+        )}
+
+        {/* Modal Finalizar Sorteo */}
+        {mostrarModalSorteo && (
+          <div 
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            onClick={() => setMostrarModalSorteo(false)}
+          >
+            <div 
+              className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 max-w-md w-full border border-gray-700 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <Trophy className="w-8 h-8 text-yellow-400" />
+                <h2 className="text-2xl font-bold text-white">Finalizar Sorteo</h2>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-white font-medium mb-2">
+                  Número Ganador (00-99)
+                </label>
+                <input
+                  type="text"
+                  maxLength={2}
+                  pattern="\d{2}"
+                  value={numeroGanadorInput}
+                  onChange={(e) => setNumeroGanadorInput(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 outline-none text-2xl font-bold text-center"
+                  placeholder="00"
+                />
+              </div>
+
+              <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-4 mb-6">
+                <p className="text-yellow-200 text-sm">
+                  ⚠️ Esta acción no se puede deshacer. Asegúrate de ingresar el número ganador correcto.
+                </p>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setMostrarModalSorteo(false)}
+                  disabled={procesando !== null}
+                  className="flex-1 px-4 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-colors disabled:opacity-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleFinalizarSorteo}
+                  disabled={procesando !== null}
+                  className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {procesando === 'sorteo' ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Procesando...
+                    </>
+                  ) : (
+                    <>
+                      <Trophy className="w-5 h-5" />
+                      Finalizar
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         )}

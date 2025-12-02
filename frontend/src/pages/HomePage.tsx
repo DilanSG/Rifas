@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Loader2, Info, X } from 'lucide-react';
+import { Loader2, Info, X, Calendar } from 'lucide-react';
 import { Boleta } from '../types';
 import { boletaService } from '../services/api';
 import { BoletaItem } from '../components/BoletaItem';
 import { ModalPago } from '../components/ModalPago';
+import { ResultadosPage } from './ResultadosPage';
 
 export const HomePage = () => {
   const [boletas, setBoletas] = useState<Boleta[]>([]);
@@ -11,13 +12,29 @@ export const HomePage = () => {
   const [mostrarInfo, setMostrarInfo] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [sorteoFinalizado, setSorteoFinalizado] = useState(false);
 
   useEffect(() => {
     cargarDatos();
+    verificarSorteo();
     // Actualizar cada 30 segundos
-    const interval = setInterval(cargarDatos, 30000);
+    const interval = setInterval(() => {
+      cargarDatos();
+      verificarSorteo();
+    }, 30000);
     return () => clearInterval(interval);
   }, []);
+
+  const verificarSorteo = async () => {
+    try {
+      const response = await boletaService.verificarSorteo();
+      if (response.success) {
+        setSorteoFinalizado(response.data.finalizado);
+      }
+    } catch (err) {
+      console.error('Error al verificar sorteo:', err);
+    }
+  };
 
   const cargarDatos = async () => {
     try {
@@ -46,7 +63,7 @@ export const HomePage = () => {
     try {
       // Reservar la boleta con los datos del usuario y comprobante opcional
       await boletaService.reservarBoleta(
-        boletaSeleccionada, 
+        boletaSeleccionada.toString(), 
         { nombre, telefono },
         comprobante
       );
@@ -60,6 +77,11 @@ export const HomePage = () => {
       throw err;
     }
   };
+
+  // Si el sorteo está finalizado, mostrar página de resultados
+  if (sorteoFinalizado) {
+    return <ResultadosPage />;
+  }
 
   if (loading) {
     return (
@@ -142,9 +164,29 @@ export const HomePage = () => {
                 </div>
                 
                 <div className="mt-4 pt-4 border-t border-gray-700">
-                  <p className="text-xs text-gray-400 text-center">
-                    El sorteo es el <strong className="text-white">20 de Diciembre 2025</strong> con la Lotería de Boyacá
-                  </p>
+                  <div className="bg-gradient-to-r from-green-900/40 to-emerald-900/40 border border-green-500/30 rounded-xl p-3 mb-3">
+                    <div className="flex items-start gap-2">
+                      <div className="flex-shrink-0 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-bold text-green-300 mb-1 text-xs">Seguridad Garantizada</p>
+                        <p className="text-[11px] text-green-200 leading-relaxed">
+                          Todos tus datos están protegidos en nuestra base de datos. No habrá cambios ni errores en la información de compra. 
+                          Al finalizar el sorteo, la página mostrará ciertos datos de hora, fecha y comprador de cada número para total transparencia.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-center gap-2 text-gray-400">
+                    <Calendar className="w-3 h-3" />
+                    <p className="text-xs">
+                      Sorteo: <strong className="text-white">20 de Diciembre 2025</strong> con la Lotería de Boyacá
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

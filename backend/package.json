@@ -8,6 +8,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "seed": "ts-node src/scripts/seedBoletas.ts",
+    "reset-sorteo": "ts-node src/scripts/resetSorteo.ts",
+    "migrate-numeros": "ts-node src/scripts/migrateNumerosToString.ts",
     "render-build": "npm install && npm run build"
   },
   "keywords": [],

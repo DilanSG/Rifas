@@ -6,7 +6,7 @@ export enum BoletaEstado {
 
 export interface Boleta {
   _id: string;
-  numero: number;
+  numero: string;
   estado: BoletaEstado;
   usuario?: {
     nombre: string;
@@ -24,7 +24,7 @@ export interface ReservaRequest {
 }
 
 export interface PagoRequest {
-  boletaNumero: number;
+  boletaNumero: string;
   nombre: string;
   telefono: string;
 }

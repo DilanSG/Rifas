@@ -18,17 +18,17 @@ async function seedBoletas() {
       await Boleta.deleteMany({});
     }
     
-    // Crear 100 boletas
+    // Crear 100 boletas (00-99)
     const boletas = [];
-    for (let i = 1; i <= 100; i++) {
+    for (let i = 0; i < 100; i++) {
       boletas.push({
-        numero: i,
+        numero: i.toString().padStart(2, '0'), // Formato 00-99
         estado: BoletaEstado.DISPONIBLE
       });
     }
     
     await Boleta.insertMany(boletas);
-    console.log('✅ Se crearon 100 boletas exitosamente');
+    console.log('✅ Se crearon 100 boletas exitosamente (00-99)');
     
     process.exit(0);
   } catch (error) {

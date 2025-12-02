@@ -19,13 +19,13 @@ export const boletaService = {
   },
 
   // Obtener una boleta específica
-  obtenerBoleta: async (numero: number): Promise<Boleta> => {
+  obtenerBoleta: async (numero: string): Promise<Boleta> => {
     const response = await api.get(`/boletas/${numero}`);
     return response.data.data;
   },
 
   // Reservar una boleta con comprobante opcional
-  reservarBoleta: async (numero: number, datos: ReservaRequest, comprobante?: File) => {
+  reservarBoleta: async (numero: string, datos: ReservaRequest, comprobante?: File) => {
     const formData = new FormData();
     formData.append('nombre', datos.nombre);
     formData.append('telefono', datos.telefono);
@@ -52,20 +52,40 @@ export const boletaService = {
     return response.data.data;
   },
 
+  // Obtener resultados del sorteo
+  obtenerResultados: async () => {
+    const response = await api.get('/boletas/resultados');
+    return response.data;
+  },
+
+  // Verificar estado del sorteo
+  verificarSorteo: async () => {
+    const response = await api.get('/boletas/sorteo');
+    return response.data;
+  },
+
+  // Admin: Finalizar sorteo
+  finalizarSorteo: async (secretKey: string, numeroGanador: string) => {
+    const response = await api.post(`/boletas/admin/${secretKey}/finalizar-sorteo`, {
+      numeroGanador
+    });
+    return response.data;
+  },
+
   // Admin: Marcar como pagada
-  marcarComoPagada: async (numero: number, secretKey: string) => {
+  marcarComoPagada: async (numero: string, secretKey: string) => {
     const response = await api.post(`/boletas/admin/${secretKey}/${numero}/marcar-pagada`);
     return response.data;
   },
 
   // Admin: Liberar reserva
-  liberarReserva: async (numero: number, secretKey: string) => {
+  liberarReserva: async (numero: string, secretKey: string) => {
     const response = await api.post(`/boletas/admin/${secretKey}/${numero}/liberar-reserva`);
     return response.data;
   },
 
   // Admin: Cambiar a reservada
-  cambiarAReservada: async (numero: number, secretKey: string) => {
+  cambiarAReservada: async (numero: string, secretKey: string) => {
     const response = await api.post(`/boletas/admin/${secretKey}/${numero}/cambiar-reservada`);
     return response.data;
   },

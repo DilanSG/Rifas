@@ -11,7 +11,7 @@ const pagoSchema = new Schema<IPagoDocument>(
       unique: true
     },
     boletaNumero: {
-      type: Number,
+      type: String,
       required: true,
       ref: 'Boleta'
     },

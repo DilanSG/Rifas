@@ -17,7 +17,7 @@ export interface IUsuarioData {
 }
 
 export interface IBoleta {
-  numero: number;
+  numero: string;
   estado: BoletaEstado;
   usuario?: IUsuarioData;
   reservadaHasta?: Date;
@@ -29,7 +29,7 @@ export interface IBoleta {
 
 export interface IPago {
   transactionId: string;
-  boletaNumero: number;
+  boletaNumero: string;
   monto: number;
   estado: PagoEstado;
   usuario: IUsuarioData;
