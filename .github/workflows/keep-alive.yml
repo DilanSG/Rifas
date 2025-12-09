@@ -14,7 +14,7 @@ jobs:
       - name: Ping Server
         run: |
           echo "Haciendo ping al servidor para mantenerlo activo..."
-          curl -f https://tu-app.onrender.com/api/health || curl -f https://tu-app.onrender.com/ || echo "Ping fallido pero continuando..."
+          curl -f https://rifas-28sc.onrender.com/ || echo "Ping fallido pero continuando..."
         continue-on-error: true
       
       - name: Log Status
