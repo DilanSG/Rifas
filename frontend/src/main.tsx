@@ -4,11 +4,13 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HomePage } from './pages/HomePage';
 import { AdminPage } from './pages/AdminPage';
 import { EjemploResultadosPage } from './pages/EjemploResultadosPage';
+import { RenderKeepAlive } from './components/RenderKeepAlive';
 import './index.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
+      <RenderKeepAlive />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/admin/:secretKey" element={<AdminPage />} />

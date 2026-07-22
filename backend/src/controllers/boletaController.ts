@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { Boleta } from '../models/Boleta';
 import { Pago } from '../models/Pago';
 import { Sorteo } from '../models/Sorteo';
-import { BoletaEstado, PagoEstado } from '../types';
+import { BoletaEstado, PagoEstado, PRECIO_BOLETA } from '../types';
 import { cacheService } from '../utils/cache';
 
 export class BoletaController {
@@ -102,7 +102,7 @@ export class BoletaController {
         data: {
           numero: boleta.numero,
           estado: boleta.estado,
-          precio: 20000
+          precio: PRECIO_BOLETA
         },
         message: comprobante 
           ? 'Boleta marcada como PAGADA. Un administrador verificará el comprobante.'

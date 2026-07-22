@@ -15,7 +15,7 @@
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: linear-gradient(135deg, #0d9488 0%, #0e7490 50%, #0c4a6e 100%);
+    background: #09050f;
     background-attachment: fixed;
     min-height: 100vh;
     position: relative;
@@ -28,14 +28,26 @@
     left: 0;
     right: 0;
     bottom: 0;
+    background: 
+      radial-gradient(ellipse at top, #1a1035 0%, transparent 60%),
+      radial-gradient(ellipse at bottom left, #0d0a1a 0%, transparent 50%),
+      radial-gradient(ellipse at center, #120a1f 0%, #09050f 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background-image: 
-      repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 35px,
-        rgba(255, 255, 255, 0.03) 35px,
-        rgba(255, 255, 255, 0.03) 70px
-      );
+      radial-gradient(1px 1px at 20% 30%, rgba(255, 255, 255, 0.05) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 70%, rgba(255, 255, 255, 0.03) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 20%, rgba(255, 255, 255, 0.04) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
     pointer-events: none;
     z-index: 0;
   }

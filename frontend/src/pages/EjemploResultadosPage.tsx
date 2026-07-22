@@ -8,27 +8,27 @@ export const EjemploResultadosPage = () => {
   const datosEjemplo = {
     numeroLoteriaCompleto: "3842",
     numeroGanador: "42",
-    fechaFinalizacion: "2025-12-20T22:00:00",
+    fechaFinalizacion: "2026-08-22T22:00:00",
     ganador: {
       numero: "42",
       nombreCensurado: "Ma*** Ro***",
       telefonoCensurado: "******7890",
-      fechaCompra: "2025-12-15T14:23:00",
+      fechaCompra: "2026-08-20T14:23:00",
       vendida: true
     },
     boletasPagadas: [
-      { numero: "01", nombreCensurado: "Ra*** Pe***", telefonoCensurado: "******2907", fechaCompra: "2025-12-10T10:15:00" },
-      { numero: "07", nombreCensurado: "Ju*** He***", telefonoCensurado: "******2015", fechaCompra: "2025-12-11T16:42:00" },
-      { numero: "15", nombreCensurado: "An*** Go***", telefonoCensurado: "******4561", fechaCompra: "2025-12-12T09:30:00" },
-      { numero: "23", nombreCensurado: "Lu*** Sá***", telefonoCensurado: "******7823", fechaCompra: "2025-12-13T11:20:00" },
-      { numero: "42", nombreCensurado: "Ma*** Ro***", telefonoCensurado: "******7890", fechaCompra: "2025-12-15T14:23:00" },
-      { numero: "58", nombreCensurado: "Jo*** Me***", telefonoCensurado: "******9012", fechaCompra: "2025-12-16T08:45:00" },
-      { numero: "67", nombreCensurado: "So*** Vá***", telefonoCensurado: "******3456", fechaCompra: "2025-12-17T13:15:00" },
-      { numero: "89", nombreCensurado: "Pa*** Ca***", telefonoCensurado: "******6789", fechaCompra: "2025-12-18T17:00:00" }
+      { numero: "01", nombreCensurado: "Ra*** Pe***", telefonoCensurado: "******2907", fechaCompra: "2026-08-10T10:15:00" },
+      { numero: "07", nombreCensurado: "Ju*** He***", telefonoCensurado: "******2015", fechaCompra: "2026-08-11T16:42:00" },
+      { numero: "15", nombreCensurado: "An*** Go***", telefonoCensurado: "******4561", fechaCompra: "2026-08-12T09:30:00" },
+      { numero: "23", nombreCensurado: "Lu*** Sá***", telefonoCensurado: "******7823", fechaCompra: "2026-08-13T11:20:00" },
+      { numero: "42", nombreCensurado: "Ma*** Ro***", telefonoCensurado: "******7890", fechaCompra: "2026-08-20T14:23:00" },
+      { numero: "58", nombreCensurado: "Jo*** Me***", telefonoCensurado: "******9012", fechaCompra: "2026-08-16T08:45:00" },
+      { numero: "67", nombreCensurado: "So*** Vá***", telefonoCensurado: "******3456", fechaCompra: "2026-08-17T13:15:00" },
+      { numero: "89", nombreCensurado: "Pa*** Ca***", telefonoCensurado: "******6789", fechaCompra: "2026-08-18T17:00:00" }
     ],
     boletasReservadas: [
-      { numero: "12", nombreCensurado: "Fe*** Mo***", telefonoCensurado: "******1234", fechaCompra: "2025-12-14T12:00:00" },
-      { numero: "34", nombreCensurado: "Cl*** Ri***", telefonoCensurado: "******5678", fechaCompra: "2025-12-15T15:30:00" }
+      { numero: "12", nombreCensurado: "Fe*** Mo***", telefonoCensurado: "******1234", fechaCompra: "2026-08-14T12:00:00" },
+      { numero: "34", nombreCensurado: "Cl*** Ri***", telefonoCensurado: "******5678", fechaCompra: "2026-08-15T15:30:00" }
     ]
   };
 
@@ -60,7 +60,7 @@ export const EjemploResultadosPage = () => {
         {/* Banner de ejemplo */}
         <div className="mb-6 sm:mb-8 text-center">
           <div className="inline-block bg-transparent text-white py-2 px-4 sm:px-6 rounded-lg font-semibold text-xs sm:text-sm">
-           Pagina Ejemplo: Así se verán los resultados el 20 de diciembre
+           Pagina Ejemplo: Así se verán los resultados el 22 de agosto
           </div>
         </div>
 
@@ -114,7 +114,7 @@ export const EjemploResultadosPage = () => {
           <div className="mt-6 flex items-center justify-center gap-2 text-gray-400">
             <Calendar className="w-5 h-5" />
             <p className="text-sm">
-              Sorteo finalizado el <span className="text-white font-bold">20 de Diciembre 2025</span>
+               Sorteo finalizado el <span className="text-white font-bold">Sábado 22 de Agosto 2026</span>
             </p>
           </div>
         </div>

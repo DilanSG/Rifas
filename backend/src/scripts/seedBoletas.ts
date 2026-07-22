@@ -8,7 +8,7 @@ dotenv.config();
 async function seedBoletas() {
   try {
     await connectDB();
-    
+
     // Verificar si ya existen boletas
     const count = await Boleta.countDocuments();
     if (count > 0) {
@@ -18,7 +18,6 @@ async function seedBoletas() {
       await Boleta.deleteMany({});
     }
     
-    // Crear 100 boletas (00-99)
     const boletas = [];
     for (let i = 0; i < 100; i++) {
       boletas.push({
@@ -28,11 +27,11 @@ async function seedBoletas() {
     }
     
     await Boleta.insertMany(boletas);
-    console.log('✅ Se crearon 100 boletas exitosamente (00-99)');
+    console.log('Se crearon 100 boletas exitosamente (00-99)');
     
     process.exit(0);
   } catch (error) {
-    console.error('❌ Error al crear boletas:', error);
+    console.error('Error al crear boletas:', error);
     process.exit(1);
   }
 }

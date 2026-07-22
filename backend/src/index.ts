@@ -9,6 +9,7 @@ import { connectDB } from './config/database';
 import boletaRoutes from './routes/boletaRoutes';
 import pagoRoutes from './routes/pagoRoutes';
 import webhookRoutes from './routes/webhookRoutes';
+import { iniciarCronJobs } from './utils/cronJobs';
 
 // Configuración
 dotenv.config();
@@ -54,6 +55,10 @@ app.get('/', (req: Request, res: Response) => {
   });
 });
 
+app.get('/api/health', (_req: Request, res: Response) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 app.use('/api/boletas', boletaRoutes);
 app.use('/api/pagos', pagoRoutes);
 app.use('/api/webhooks', webhookRoutes);
@@ -69,8 +74,22 @@ app.use((req: Request, res: Response) => {
 // Iniciar servidor
 async function iniciarServidor() {
   try {
+    // Validar configuración sensible en producción
+    if (process.env.NODE_ENV === 'production') {
+      if (!process.env.ADMIN_SECRET_KEY || process.env.ADMIN_SECRET_KEY === 'admin123') {
+        console.warn('⚠️  ADMIN_SECRET_KEY no configurada o usa el valor por defecto. Cámbiala en producción.');
+      }
+      if (!process.env.MONGODB_URI) {
+        console.error('❌ MONGODB_URI no configurada');
+        process.exit(1);
+      }
+    }
+
     // Conectar a MongoDB
     await connectDB();
+    
+    // Iniciar cron jobs
+    iniciarCronJobs();
     
     // Iniciar servidor
     app.listen(PORT, () => {

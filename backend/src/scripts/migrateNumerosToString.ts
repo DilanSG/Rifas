@@ -9,11 +9,11 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 const connectDB = async () => {
   try {
     const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/rifas';
-    console.log('🔌 Conectando a MongoDB...');
+    console.log('Conectando a MongoDB...');
     await mongoose.connect(mongoUri);
-    console.log('✅ Conectado a MongoDB');
+    console.log('Conectado a MongoDB');
   } catch (error) {
-    console.error('❌ Error al conectar a MongoDB:', error);
+    console.error('Error al conectar a MongoDB:', error);
     process.exit(1);
   }
 };
@@ -32,7 +32,7 @@ const migrarNumerosAString = async () => {
 
     // Obtener todas las boletas
     const boletas = await boletasCollection.find({}).toArray();
-    console.log(`\n📊 Total de boletas encontradas: ${boletas.length}`);
+    console.log(`\n Total de boletas encontradas: ${boletas.length}`);
 
     let migradas = 0;
     let yaString = 0;
@@ -45,7 +45,7 @@ const migrarNumerosAString = async () => {
         // Verificar si ya es string
         if (typeof numeroActual === 'string') {
           yaString++;
-          console.log(`⏭️  Boleta ${numeroActual} ya es string, saltando...`);
+          console.log(`Boleta ${numeroActual} ya es string, saltando...`);
           continue;
         }
 
@@ -69,7 +69,7 @@ const migrarNumerosAString = async () => {
         );
 
         migradas++;
-        console.log(`✅ Boleta migrada: ${numeroActual} → "${nuevoNumero}" (Estado: ${boleta.estado})`);
+        console.log(`Boleta migrada: ${numeroActual} → "${nuevoNumero}" (Estado: ${boleta.estado})`);
         
       } catch (error) {
         errores++;

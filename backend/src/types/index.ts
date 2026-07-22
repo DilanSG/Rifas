@@ -1,3 +1,5 @@
+export const PRECIO_BOLETA = 20000;
+
 export enum BoletaEstado {
   DISPONIBLE = 'disponible',
   RESERVADA = 'reservada',
