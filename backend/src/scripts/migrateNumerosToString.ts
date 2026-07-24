@@ -73,18 +73,18 @@ const migrarNumerosAString = async () => {
         
       } catch (error) {
         errores++;
-        console.error(`❌ Error al migrar boleta ${boleta.numero}:`, error);
+        console.error(` Error al migrar boleta ${boleta.numero}:`, error);
       }
     }
 
-    console.log('\n📈 Resumen de migración:');
-    console.log(`   ✅ Boletas migradas: ${migradas}`);
-    console.log(`   ⏭️  Ya eran string: ${yaString}`);
-    console.log(`   ❌ Errores: ${errores}`);
-    console.log(`   📊 Total procesadas: ${boletas.length}`);
+    console.log('\nResumen de migración:');
+    console.log(`  Boletas migradas: ${migradas}`);
+    console.log(`  Ya eran string: ${yaString}`);
+    console.log(`  Errores: ${errores}`);
+    console.log(`  Total procesadas: ${boletas.length}`);
 
     // Verificar el resultado
-    console.log('\n🔍 Verificando resultado...');
+    console.log('\nVerificando resultado...');
     const boletasActualizadas = await boletasCollection.find({}).sort({ numero: 1 }).toArray();
     console.log('\nPrimeras 10 boletas después de la migración:');
     boletasActualizadas.slice(0, 10).forEach(b => {
