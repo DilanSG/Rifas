@@ -8,7 +8,7 @@ export const EjemploResultadosPage = () => {
   const datosEjemplo = {
     numeroLoteriaCompleto: "3842",
     numeroGanador: "42",
-    fechaFinalizacion: "2026-08-22T22:00:00",
+    fechaFinalizacion: "2026-08-29T22:00:00",
     ganador: {
       numero: "42",
       nombreCensurado: "Ma*** Ro***",
@@ -60,7 +60,7 @@ export const EjemploResultadosPage = () => {
         {/* Banner de ejemplo */}
         <div className="mb-6 sm:mb-8 text-center">
           <div className="inline-block bg-transparent text-white py-2 px-4 sm:px-6 rounded-lg font-semibold text-xs sm:text-sm">
-           Pagina Ejemplo: Así se verán los resultados el 22 de agosto
+           Pagina Ejemplo: Así se verán los resultados el 29 de agosto
           </div>
         </div>
 
@@ -114,7 +114,7 @@ export const EjemploResultadosPage = () => {
           <div className="mt-6 flex items-center justify-center gap-2 text-gray-400">
             <Calendar className="w-5 h-5" />
             <p className="text-sm">
-               Sorteo finalizado el <span className="text-white font-bold">Sábado 22 de Agosto 2026</span>
+               Sorteo finalizado el <span className="text-white font-bold">Sábado 29 de Agosto 2026</span>
             </p>
           </div>
         </div>
