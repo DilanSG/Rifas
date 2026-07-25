@@ -65,9 +65,10 @@ export const ModalPago = ({ boletaNumero, onClose, onConfirmar }: ModalPagoProps
       setTimeout(() => {
         onClose();
       }, 2000);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error:', error);
-      showNotification('error', 'Error al procesar la reserva. Por favor intenta nuevamente.');
+      const mensaje = error?.response?.data?.message || 'Error al procesar la reserva. Intenta nuevamente.';
+      showNotification('error', mensaje);
     } finally {
       setLoading(false);
     }

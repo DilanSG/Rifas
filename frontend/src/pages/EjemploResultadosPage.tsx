@@ -1,66 +1,54 @@
 import { useNavigate } from 'react-router-dom';
-import { Trophy, Calendar, CheckCircle, Clock, Home } from 'lucide-react';
+import { Trophy, Calendar, CheckCircle, Clock, Home, XCircle } from 'lucide-react';
 
 export const EjemploResultadosPage = () => {
   const navigate = useNavigate();
   
-  // Datos artificiales de ejemplo
   const datosEjemplo = {
     numeroLoteriaCompleto: "3842",
     numeroGanador: "42",
     fechaFinalizacion: "2026-08-29T22:00:00",
     ganador: {
       numero: "42",
+      estado: "pagada",
       nombreCensurado: "Ma*** Ro***",
       telefonoCensurado: "******7890",
       fechaCompra: "2026-08-20T14:23:00",
       vendida: true
     },
     boletasPagadas: [
-      { numero: "01", nombreCensurado: "Ra*** Pe***", telefonoCensurado: "******2907", fechaCompra: "2026-08-10T10:15:00" },
-      { numero: "07", nombreCensurado: "Ju*** He***", telefonoCensurado: "******2015", fechaCompra: "2026-08-11T16:42:00" },
-      { numero: "15", nombreCensurado: "An*** Go***", telefonoCensurado: "******4561", fechaCompra: "2026-08-12T09:30:00" },
-      { numero: "23", nombreCensurado: "Lu*** Sá***", telefonoCensurado: "******7823", fechaCompra: "2026-08-13T11:20:00" },
-      { numero: "42", nombreCensurado: "Ma*** Ro***", telefonoCensurado: "******7890", fechaCompra: "2026-08-20T14:23:00" },
-      { numero: "58", nombreCensurado: "Jo*** Me***", telefonoCensurado: "******9012", fechaCompra: "2026-08-16T08:45:00" },
-      { numero: "67", nombreCensurado: "So*** Vá***", telefonoCensurado: "******3456", fechaCompra: "2026-08-17T13:15:00" },
-      { numero: "89", nombreCensurado: "Pa*** Ca***", telefonoCensurado: "******6789", fechaCompra: "2026-08-18T17:00:00" }
+      { numero: "01", nombreCensurado: "Ra*** Pe***", fechaCompra: "2026-08-10T10:15:00" },
+      { numero: "07", nombreCensurado: "Ju*** He***", fechaCompra: "2026-08-11T16:42:00" },
+      { numero: "15", nombreCensurado: "An*** Go***", fechaCompra: "2026-08-12T09:30:00" },
+      { numero: "23", nombreCensurado: "Lu*** Sá***", fechaCompra: "2026-08-13T11:20:00" },
+      { numero: "42", nombreCensurado: "Ma*** Ro***", fechaCompra: "2026-08-20T14:23:00" },
+      { numero: "58", nombreCensurado: "Jo*** Me***", fechaCompra: "2026-08-16T08:45:00" },
+      { numero: "67", nombreCensurado: "So*** Vá***", fechaCompra: "2026-08-17T13:15:00" },
+      { numero: "89", nombreCensurado: "Pa*** Ca***", fechaCompra: "2026-08-18T17:00:00" }
     ],
     boletasReservadas: [
-      { numero: "12", nombreCensurado: "Fe*** Mo***", telefonoCensurado: "******1234", fechaCompra: "2026-08-14T12:00:00" },
-      { numero: "34", nombreCensurado: "Cl*** Ri***", telefonoCensurado: "******5678", fechaCompra: "2026-08-15T15:30:00" }
+      { numero: "12", nombreCensurado: "Fe*** Mo***", fechaCompra: "2026-08-14T12:00:00" },
+      { numero: "34", nombreCensurado: "Cl*** Ri***", fechaCompra: "2026-08-15T15:30:00" }
     ]
-  };
-
-  const formatearFecha = (fecha: string) => {
-    return new Date(fecha).toLocaleString('es-CO', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 py-4 sm:py-8 px-3 sm:px-4">
       <div className="max-w-6xl mx-auto">
-        
-        {/* Botón de Volver al Inicio */}
+
         <div className="mb-4 sm:mb-6 text-center">
           <button
             onClick={() => navigate('/')}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-transparent text-white font-semibold transition-all transform hover:scale-105"
+            className="inline-flex items-center gap-2 px-6 py-2 text-white/70 hover:text-white transition-colors text-sm"
           >
-            <Home className="w-5 h-5" />
+            <Home className="w-4 h-4" />
             Volver al Inicio
           </button>
         </div>
 
-        {/* Banner de ejemplo */}
         <div className="mb-6 sm:mb-8 text-center">
-          <div className="inline-block bg-transparent text-white py-2 px-4 sm:px-6 rounded-lg font-semibold text-xs sm:text-sm">
-           Pagina Ejemplo: Así se verán los resultados el 29 de agosto
+          <div className="inline-block bg-blue-500/10 border border-blue-500/30 text-blue-300 py-2 px-4 sm:px-6 rounded-lg font-semibold text-xs sm:text-sm">
+            Vista de ejemplo — Así se verán los resultados el 29 de agosto
           </div>
         </div>
 
@@ -70,8 +58,7 @@ export const EjemploResultadosPage = () => {
             <Trophy className="w-8 h-8 sm:w-10 sm:h-10 text-yellow-400" />
             <span>Resultados del Sorteo</span>
           </h1>
-          
-          {/* Ganador */}
+
           <div className="bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-500 rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-2xl border-2 sm:border-4 border-yellow-300 max-w-2xl mx-auto">
             <div className="bg-gray-900/30 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 border border-gray-800">
               <p className="text-gray-900 font-semibold text-sm sm:text-base mb-2">
@@ -88,56 +75,61 @@ export const EjemploResultadosPage = () => {
               Número Ganador
             </p>
             <p className="text-5xl sm:text-7xl font-black text-gray-900 mb-4 sm:mb-6">{datosEjemplo.numeroGanador}</p>
-            
-            <div className="bg-white/20 rounded-lg sm:rounded-xl p-4 sm:p-6 backdrop-blur-sm">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 text-gray-900">
-                <div>
-                  <p className="text-xs sm:text-sm font-semibold mb-1">Ganador</p>
-                  <p className="text-base sm:text-lg font-bold break-words">{datosEjemplo.ganador.nombreCensurado}</p>
+
+            {datosEjemplo.ganador.vendida ? (
+              <div className="bg-white/30 rounded-lg sm:rounded-xl p-4 sm:p-6 space-y-2 sm:space-y-3">
+                <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
+                  <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" />
+                  <span className="text-gray-900 font-bold text-base sm:text-lg">
+                    Estado: COMPRADA
+                  </span>
                 </div>
-                <div>
-                  <p className="text-xs sm:text-sm font-semibold mb-1">Teléfono</p>
-                  <p className="text-base sm:text-lg font-bold">{datosEjemplo.ganador.telefonoCensurado}</p>
+                <div className="text-center">
+                  <p className="text-gray-800 text-xs sm:text-sm font-semibold mb-1">Comprador:</p>
+                  <p className="text-gray-900 font-black text-xl sm:text-2xl break-words">{datosEjemplo.ganador.nombreCensurado}</p>
                 </div>
-                <div>
-                  <p className="text-xs sm:text-sm font-semibold mb-1">Fecha de compra</p>
-                  <p className="text-sm sm:text-base font-bold">{formatearFecha(datosEjemplo.ganador.fechaCompra)}</p>
+                <div className="text-center">
+                  <p className="text-gray-800 text-xs sm:text-sm font-semibold mb-1">Teléfono:</p>
+                  <p className="text-gray-900 font-bold text-lg sm:text-xl">{datosEjemplo.ganador.telefonoCensurado}</p>
                 </div>
-                <div>
-                  <p className="text-xs sm:text-sm font-semibold mb-1">Sorteo finalizado</p>
-                  <p className="text-sm sm:text-base font-bold">{formatearFecha(datosEjemplo.fechaFinalizacion)}</p>
-                </div>
+                {datosEjemplo.ganador.fechaCompra && (
+                  <div className="text-center">
+                    <p className="text-gray-800 text-xs sm:text-sm font-semibold mb-1">Fecha de Compra:</p>
+                    <p className="text-gray-900 font-medium text-sm sm:text-base flex items-center justify-center gap-2">
+                      <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+                      {new Date(datosEjemplo.ganador.fechaCompra).toLocaleDateString('es-CO', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </p>
+                  </div>
+                )}
               </div>
-            </div>
-          </div>
+            ) : (
+              <div className="bg-red-500/30 rounded-lg sm:rounded-xl p-4 sm:p-6">
+                <p className="text-gray-900 font-bold text-base sm:text-lg flex items-center justify-center gap-2">
+                  <XCircle className="w-5 h-5 sm:w-6 sm:h-6" />
+                  Boleta No Vendida
+                </p>
+                <p className="text-gray-800 text-xs sm:text-sm mt-2">Esta boleta no fue comprada por ningún participante</p>
+              </div>
+            )}
 
-          <div className="mt-6 flex items-center justify-center gap-2 text-gray-400">
-            <Calendar className="w-5 h-5" />
-            <p className="text-sm">
-               Sorteo finalizado el <span className="text-white font-bold">Sábado 29 de Agosto 2026</span>
-            </p>
-          </div>
-        </div>
-
-        {/* Estadísticas */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-6 mb-6 sm:mb-8">
-          <div className="bg-gray-800 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-gray-700">
-            <p className="text-gray-400 text-xs sm:text-sm mb-1 sm:mb-2">Total de boletas</p>
-            <p className="text-2xl sm:text-3xl font-bold text-white">100</p>
-          </div>
-          <div className="bg-green-900/30 border border-green-700/50 rounded-lg sm:rounded-xl p-4 sm:p-6">
-            <div className="flex items-center gap-2 mb-1 sm:mb-2">
-              <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" />
-              <p className="text-green-300 text-xs sm:text-sm">Boletas pagadas</p>
-            </div>
-            <p className="text-2xl sm:text-3xl font-bold text-green-400">{datosEjemplo.boletasPagadas.length}</p>
-          </div>
-          <div className="bg-yellow-900/30 border border-yellow-700/50 rounded-lg sm:rounded-xl p-4 sm:p-6">
-            <div className="flex items-center gap-2 mb-1 sm:mb-2">
-              <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" />
-              <p className="text-yellow-300 text-xs sm:text-sm">Boletas reservadas</p>
-            </div>
-            <p className="text-2xl sm:text-3xl font-bold text-yellow-400">{datosEjemplo.boletasReservadas.length}</p>
+            {datosEjemplo.fechaFinalizacion && (
+              <p className="text-gray-700 text-sm mt-6 flex items-center justify-center gap-2">
+                <Calendar className="w-4 h-4" />
+                Sorteo finalizado: {new Date(datosEjemplo.fechaFinalizacion).toLocaleDateString('es-CO', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </p>
+            )}
           </div>
         </div>
 
@@ -145,76 +137,87 @@ export const EjemploResultadosPage = () => {
         <div className="mb-6 sm:mb-8">
           <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 flex items-center gap-2">
             <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-400" />
-            Boletas Pagadas ({datosEjemplo.boletasPagadas.length})
+            Boletas Compradas ({datosEjemplo.boletasPagadas.length})
           </h2>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {datosEjemplo.boletasPagadas.map((boleta) => (
-              <div 
+              <div
                 key={boleta.numero}
-                className={`rounded-lg sm:rounded-xl p-3 sm:p-4 border-2 ${
-                  boleta.numero === datosEjemplo.numeroGanador
-                    ? 'bg-yellow-500/20 border-yellow-400'
-                    : 'bg-green-900/30 border-green-700/50'
+                className={`rounded-lg sm:rounded-xl p-4 sm:p-5 border-2 transition-all ${
+                  datosEjemplo.numeroGanador === boleta.numero
+                    ? 'bg-gradient-to-br from-yellow-400 to-yellow-500 border-yellow-300 shadow-2xl scale-105'
+                    : 'bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700'
                 }`}
               >
                 <div className="flex justify-between items-start mb-2 sm:mb-3">
                   <span className={`text-2xl sm:text-3xl font-black ${
-                    boleta.numero === datosEjemplo.numeroGanador ? 'text-yellow-400' : 'text-green-400'
+                    datosEjemplo.numeroGanador === boleta.numero ? 'text-gray-900' : 'text-green-400'
                   }`}>
                     {boleta.numero}
                   </span>
-                  {boleta.numero === datosEjemplo.numeroGanador && (
-                    <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
+                  {datosEjemplo.numeroGanador === boleta.numero && (
+                    <Trophy className="w-6 h-6 sm:w-8 sm:h-8 text-gray-900 animate-bounce" />
                   )}
                 </div>
-                <div className="space-y-0.5 sm:space-y-1 text-xs sm:text-sm">
-                  <p className="text-gray-300 break-words">
-                    👤 {boleta.nombreCensurado}
-                  </p>
-                  <p className="text-gray-300">
-                    📱 {boleta.telefonoCensurado}
-                  </p>
-                  <p className="text-gray-400 text-[10px] sm:text-xs">
-                    📅 {formatearFecha(boleta.fechaCompra)}
-                  </p>
-                </div>
+                <p className={`text-xs sm:text-sm font-medium mb-1 break-words ${
+                  datosEjemplo.numeroGanador === boleta.numero ? 'text-gray-900' : 'text-gray-300'
+                }`}>
+                  {boleta.nombreCensurado}
+                </p>
+                <p className={`text-xs flex items-center gap-1 ${
+                  datosEjemplo.numeroGanador === boleta.numero ? 'text-gray-700' : 'text-gray-500'
+                }`}>
+                  <Calendar className="w-3 h-3" />
+                  {new Date(boleta.fechaCompra).toLocaleDateString('es-CO')}
+                </p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Boletas Reservadas */}
-        {datosEjemplo.boletasReservadas.length > 0 && (
-          <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 flex items-center gap-2">
-              <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
-              Boletas Reservadas ({datosEjemplo.boletasReservadas.length})
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-              {datosEjemplo.boletasReservadas.map((boleta) => (
-                <div 
-                  key={boleta.numero}
-                  className="bg-yellow-900/30 border-2 border-yellow-700/50 rounded-lg sm:rounded-xl p-3 sm:p-4"
-                >
-                  <span className="text-2xl sm:text-3xl font-black text-yellow-400 block mb-2 sm:mb-3">
-                    {boleta.numero}
-                  </span>
-                  <div className="space-y-0.5 sm:space-y-1 text-xs sm:text-sm">
-                    <p className="text-gray-300 break-words">
-                      👤 {boleta.nombreCensurado}
-                    </p>
-                    <p className="text-gray-300">
-                      📱 {boleta.telefonoCensurado}
-                    </p>
-                    <p className="text-gray-400 text-[10px] sm:text-xs">
-                      📅 {formatearFecha(boleta.fechaCompra)}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+        <div>
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 flex items-center gap-2">
+            <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
+            Boletas Reservadas ({datosEjemplo.boletasReservadas.length})
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            {datosEjemplo.boletasReservadas.map((boleta) => (
+              <div
+                key={boleta.numero}
+                className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-5 border-2 border-gray-700"
+              >
+                <span className="text-3xl font-black text-yellow-400 block mb-3">
+                  {boleta.numero}
+                </span>
+                <p className="text-sm font-medium text-gray-300 mb-1">
+                  {boleta.nombreCensurado}
+                </p>
+                <p className="text-xs text-gray-500 flex items-center gap-1">
+                  <Calendar className="w-3 h-3" />
+                  {new Date(boleta.fechaCompra).toLocaleDateString('es-CO')}
+                </p>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
+
+        {/* Footer */}
+        <div className="mt-8 sm:mt-12 text-center">
+          <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-gray-700 max-w-2xl mx-auto">
+            <h3 className="text-white font-bold text-base sm:text-lg mb-2 sm:mb-3">
+              Transparencia en el Sorteo
+            </h3>
+            <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">
+              Esta página muestra todas las boletas compradas y reservadas del sorteo. 
+              Los datos de los compradores están censurados para proteger su privacidad, 
+              pero pueden verificar su boleta con sus datos.
+            </p>
+          </div>
+        </div>
+
       </div>
     </div>
   );

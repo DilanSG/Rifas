@@ -65,20 +65,19 @@ export const HomePage = () => {
     if (!boletaSeleccionada) return;
 
     try {
-      // Reservar la boleta con los datos del usuario y comprobante opcional
       await boletaService.reservarBoleta(
         boletaSeleccionada, 
         { nombre, telefono },
         comprobante
       );
 
-      // Recargar las boletas para actualizar el estado
       await cargarDatos();
       
       return { success: true };
     } catch (err: any) {
       console.error('Error:', err);
-      throw err;
+      const errorMensaje = err?.response?.data?.message || err?.message || 'Error al procesar la reserva';
+      throw new Error(errorMensaje);
     }
   };
 

@@ -5,6 +5,10 @@ import { Sorteo } from '../models/Sorteo';
 import { BoletaEstado, PagoEstado, PRECIO_BOLETA } from '../types';
 import { cacheService } from '../utils/cache';
 
+interface MulterRequest extends Request {
+  file?: Express.Multer.File;
+}
+
 export class BoletaController {
   // Listar todas las boletas
   static async listarBoletas(req: Request, res: Response) {
@@ -45,7 +49,7 @@ export class BoletaController {
     try {
       const { numero } = req.params;
       const { nombre, telefono } = req.body;
-      const comprobante = (req as any).file; // Archivo subido con multer
+      const comprobante = (req as MulterRequest).file;
 
       if (!nombre || !telefono) {
         return res.status(400).json({

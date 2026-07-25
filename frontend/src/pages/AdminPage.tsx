@@ -26,6 +26,11 @@ export const AdminPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [procesando, setProcesando] = useState<string | null>(null);
   const [comprobanteModal, setComprobanteModal] = useState<string | null>(null);
+  const [imagenError, setImagenError] = useState<Record<string, boolean>>({});
+
+  const getComprobanteUrl = (comprobanteUrl: string) => {
+    return `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}${comprobanteUrl}`;
+  };
   const [sorteoFinalizado, setSorteoFinalizado] = useState(false);
   const [numeroGanador, setNumeroGanador] = useState<string | null>(null);
   const [numeroLoteriaCompleto, setNumeroLoteriaCompleto] = useState<string | null>(null);
@@ -367,11 +372,26 @@ export const AdminPage = () => {
                       <td className="px-4 py-4">
                         {boleta.comprobanteUrl ? (
                           <button
-                            onClick={() => setComprobanteModal(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}${boleta.comprobanteUrl}`)}
-                            className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1"
+                            onClick={() => setComprobanteModal(getComprobanteUrl(boleta.comprobanteUrl!))}
+                            className="group relative"
                           >
-                            <ImageIcon className="w-4 h-4" />
-                            Ver
+                            {imagenError[boleta._id] ? (
+                              <div className="flex items-center gap-1 text-red-400 text-sm">
+                                <ImageIcon className="w-4 h-4" />
+                                Error
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-2">
+                                <img
+                                  src={getComprobanteUrl(boleta.comprobanteUrl)}
+                                  alt="Comprobante"
+                                  className="w-12 h-12 object-cover rounded border border-gray-600 group-hover:border-blue-400 transition-colors"
+                                  onError={() => setImagenError(prev => ({ ...prev, [boleta._id]: true }))}
+                                  onLoad={() => setImagenError(prev => ({ ...prev, [boleta._id]: false }))}
+                                />
+                                <span className="text-blue-400 hover:text-blue-300 text-sm">Ver</span>
+                              </div>
+                            )}
                           </button>
                         ) : (
                           <span className="text-gray-500 text-sm">Sin comprobante</span>
@@ -453,11 +473,26 @@ export const AdminPage = () => {
 
                     {boleta.comprobanteUrl && (
                       <button
-                        onClick={() => setComprobanteModal(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}${boleta.comprobanteUrl}`)}
-                        className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1"
+                        onClick={() => setComprobanteModal(getComprobanteUrl(boleta.comprobanteUrl!))}
+                        className="group relative"
                       >
-                        <ImageIcon className="w-4 h-4" />
-                        Ver comprobante
+                        {imagenError[boleta._id] ? (
+                          <div className="flex items-center gap-1 text-red-400 text-sm">
+                            <ImageIcon className="w-4 h-4" />
+                            Error al cargar
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <img
+                              src={getComprobanteUrl(boleta.comprobanteUrl)}
+                              alt="Comprobante"
+                              className="w-10 h-10 object-cover rounded border border-gray-600 group-hover:border-blue-400 transition-colors"
+                              onError={() => setImagenError(prev => ({ ...prev, [boleta._id]: true }))}
+                              onLoad={() => setImagenError(prev => ({ ...prev, [boleta._id]: false }))}
+                            />
+                            <span className="text-blue-400 hover:text-blue-300 text-sm">Ver comprobante</span>
+                          </div>
+                        )}
                       </button>
                     )}
                   </div>
@@ -511,11 +546,29 @@ export const AdminPage = () => {
               >
                 <XCircle className="w-8 h-8" />
               </button>
-              <img 
-                src={comprobanteModal} 
-                alt="Comprobante de pago" 
-                className="w-full h-auto rounded-lg shadow-2xl"
-              />
+              <div className="bg-gray-900 rounded-lg shadow-2xl overflow-hidden">
+                <img 
+                  src={comprobanteModal} 
+                  alt="Comprobante de pago" 
+                  className="w-full h-auto max-h-[80vh] object-contain"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    target.parentElement!.innerHTML = `
+                      <div class="flex flex-col items-center justify-center p-8 text-gray-400">
+                        <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <p class="text-lg font-medium mb-1">No se pudo cargar la imagen</p>
+                        <p class="text-sm text-gray-500">El comprobante podría no estar disponible o haber sido eliminado</p>
+                        <a href="${comprobanteModal}" target="_blank" class="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors">
+                          Intentar abrir directamente
+                        </a>
+                      </div>
+                    `;
+                  }}
+                />
+              </div>
             </div>
           </div>
         )}

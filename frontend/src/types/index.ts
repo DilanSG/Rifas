@@ -14,6 +14,7 @@ export interface Boleta {
   };
   reservadaHasta?: string;
   pagoId?: string;
+  comprobanteUrl?: string;
   createdAt: string;
   updatedAt: string;
 }
