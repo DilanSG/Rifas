@@ -57,7 +57,7 @@ export const ResultadosPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center relative z-10">
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-blue-500 animate-spin mx-auto mb-4" />
           <p className="text-white font-medium">Cargando resultados...</p>
@@ -68,9 +68,9 @@ export const ResultadosPage = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center">
-        <div className="text-center text-red-400">
-          <p>{error}</p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center relative z-10">
+        <div className="text-center">
+          <p className="text-red-400 font-medium">{error}</p>
         </div>
       </div>
     );
@@ -80,7 +80,7 @@ export const ResultadosPage = () => {
   const boletasPagadas = datos?.resultados.filter(b => b.estado === 'pagada') || [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 py-4 sm:py-8 px-3 sm:px-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 py-4 sm:py-8 px-3 sm:px-4 relative z-10">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">

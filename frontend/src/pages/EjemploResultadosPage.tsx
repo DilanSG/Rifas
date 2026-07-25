@@ -33,7 +33,7 @@ export const EjemploResultadosPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 py-4 sm:py-8 px-3 sm:px-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 py-4 sm:py-8 px-3 sm:px-4 relative z-10">
       <div className="max-w-6xl mx-auto">
 
         <div className="mb-4 sm:mb-6 text-center">
