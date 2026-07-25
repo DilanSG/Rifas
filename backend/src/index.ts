@@ -21,14 +21,24 @@ const PORT = process.env.PORT || 5000;
 // Compresi\u00f3n gzip
 app.use(compression());
 
-const allowedOrigins: string[] = [
+const allowedOrigins = [
   process.env.FRONTEND_URL,
-  'https://rifasg.vercel.app',
-  'http://localhost:5173'
-].filter((origin): origin is string => Boolean(origin));
+  'http://localhost:5173',
+  'http://localhost:4173',
+].filter((s): s is string => !!s);
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+    if (origin.endsWith('.vercel.app')) {
+      callback(null, true);
+      return;
+    }
+    callback(null, true);
+  },
   credentials: true
 }));
 
