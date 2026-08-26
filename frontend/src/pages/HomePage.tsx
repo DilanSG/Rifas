@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader2, Info, X, Calendar, Lock } from 'lucide-react';
 import { Boleta } from '../types';
-import { boletaService } from '../services/api';
+import { boletaService, healthCheck } from '../services/api';
 import { BoletaItem } from '../components/BoletaItem';
 import { ModalPago } from '../components/ModalPago';
+import { ServerLoading } from '../components/ServerLoading';
 import { ResultadosPage } from './ResultadosPage';
 
 export const HomePage = () => {
@@ -18,17 +19,11 @@ export const HomePage = () => {
   const [mostrarModalAdmin, setMostrarModalAdmin] = useState(false);
   const [secretKeyInput, setSecretKeyInput] = useState('');
 
-  useEffect(() => {
-    cargarDatos();
-    verificarSorteo();
-    // Actualizar cada 30 segundos
-    const interval = setInterval(() => {
-      cargarDatos();
-      verificarSorteo();
-    }, 30000);
-    return () => clearInterval(interval);
-  }, []);
+  // Estado para el fallback del servidor
+  const [serverStatus, setServerStatus] = useState<'checking' | 'starting' | 'ready'>('checking');
+  const intervalRef = useRef<number | null>(null);
 
+  // Definir funciones PRIMERO (antes de los useEffect que las usan)
   const verificarSorteo = async () => {
     try {
       const response = await boletaService.verificarSorteo();
@@ -52,6 +47,71 @@ export const HomePage = () => {
       setLoading(false);
     }
   };
+
+  // Verificar si el servidor está listo
+  const checkServerReady = useCallback(async () => {
+    try {
+      const result = await healthCheck.checkReady();
+      if (result.ready) {
+        setServerStatus('ready');
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
+        return true;
+      }
+      setServerStatus('starting');
+      return false;
+    } catch {
+      setServerStatus('starting');
+      return false;
+    }
+  }, []);
+
+  // Intentar cargar datos cuando el servidor esté listo
+  const tryLoadData = useCallback(async () => {
+    const isReady = await checkServerReady();
+    if (isReady) {
+      await cargarDatos();
+      await verificarSorteo();
+    }
+  }, [checkServerReady]);
+
+  // Reconexión automática
+  useEffect(() => {
+    // Primera verificación
+    checkServerReady().then(isReady => {
+      if (isReady) {
+        cargarDatos();
+        verificarSorteo();
+      } else {
+        // Si no está listo, iniciar intervalo de reconexión
+        intervalRef.current = window.setInterval(() => {
+          tryLoadData();
+        }, 5000); // Cada 5 segundos
+      }
+    });
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [checkServerReady, tryLoadData]);
+
+  // Cuando el servidor esté listo, cargar datos
+  useEffect(() => {
+    if (serverStatus === 'ready') {
+      cargarDatos();
+      verificarSorteo();
+      // Actualizar cada 30 segundos
+      const interval = setInterval(() => {
+        cargarDatos();
+        verificarSorteo();
+      }, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [serverStatus]);
 
   const handleSeleccionarBoleta = (numero: string) => {
     setBoletaSeleccionada(numero);
@@ -89,6 +149,11 @@ export const HomePage = () => {
     }
   };
 
+  // Si el servidor está iniciándose, mostrar fallback
+  if (serverStatus !== 'ready') {
+    return <ServerLoading />;
+  }
+
   // Si el sorteo está finalizado, mostrar página de resultados
   if (sorteoFinalizado) {
     return <ResultadosPage />;
@@ -110,14 +175,14 @@ export const HomePage = () => {
       <div className="max-w-md w-full relative z-10">
         {/* Card principal con fondo oscuro */}
         <div className="bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden border border-gray-700/50">
-          {/* Botón de información en la esquina superior izquierda */}
+          {/* Botón de instrucciones en la esquina superior izquierda */}
           <button
             onClick={() => setMostrarInfo(!mostrarInfo)}
             className="absolute top-2 left-2 sm:top-3 sm:left-3 z-20 bg-transparent hover:bg-white/10 text-white rounded-full px-3 py-2 transition-all duration-200 hover:scale-105 flex items-center gap-1.5"
-            aria-label="Información de compra"
+            aria-label="Instrucciones"
           >
-            <Info className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="text-xs sm:text-sm font-medium">Info</span>
+            <Info className="w-5 h-5 sm:w-6 sm:h-6" />
+            <span className="text-sm sm:text-base font-medium">Instrucciones</span>
           </button>
 
           {/* Modal de instrucciones */}
@@ -182,7 +247,7 @@ export const HomePage = () => {
                     </div>
                     <div>
                       <p className="mb-2 sm:mb-3 leading-relaxed">
-                        <strong>Resultados del sorteo:</strong> El 29 de agosto, esta página se actualizará automáticamente 
+                        <strong>Resultados del sorteo:</strong> El 12 de septiembre, esta página se actualizará automáticamente 
                         mostrando el número ganador y los datos de todas las boletas vendidas para total transparencia.
                       </p>
                       <button 
@@ -216,7 +281,7 @@ export const HomePage = () => {
                     <div className="flex items-center justify-center gap-2 text-gray-400">
                       <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
                       <p className="text-xs sm:text-sm">
-                        Sorteo: <strong className="text-white">Sábado 29 de Agosto 2026</strong> con la Lotería de Boyacá (Sorteo 4639)
+                        Sorteo: <strong className="text-white">Sábado 12 de Septiembre 2026</strong> con la Lotería de Boyacá (Sorteo 4641)
                       </p>
                     </div>
                   </div>
@@ -227,13 +292,12 @@ export const HomePage = () => {
           )}
 
           {/* Header con título y premio */}
-          <div className="text-center pt-4 sm:pt-8 pb-4 sm:pb-6 px-4 sm:px-6 relative">
-            <p className="text-gray-400 text-xs sm:text-sm uppercase tracking-widest mb-1">Pro fondos</p>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-2 sm:mb-3">
+          <div className="text-center pt-10 sm:pt-14 pb-4 sm:pb-6 px-4 sm:px-6 relative">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black leading-none">
               <span className="text-gray-300">GRAN</span>
               <span className="text-white italic">rifa</span>
             </h1>
-            <div className="text-4xl sm:text-5xl md:text-6xl font-black text-white mb-1">
+            <div className="text-4xl sm:text-5xl md:text-6xl font-black text-white leading-none mt-2">
               $1.000.000
             </div>
           </div>
@@ -266,7 +330,7 @@ export const HomePage = () => {
           <div className="bg-black/40 backdrop-blur-sm px-3 sm:px-6 py-3 sm:py-4 border-t border-gray-700/50">
             <div className="flex justify-between items-center text-xs sm:text-xs mb-2 sm:mb-3">
               <div className="text-left">
-                <p className="text-white font-bold text-xs sm:text-sm">Valor: $20.000</p>
+                <p className="text-white font-bold text-base sm:text-lg">Valor: $20.000</p>
                 <p className="text-gray-400 mb-0.5 text-[10px] sm:text-xs">Transferencias al:</p>
                 <p className="text-white font-bold text-xs sm:text-sm">3105572015</p>
                 <p 
@@ -278,8 +342,8 @@ export const HomePage = () => {
               </div>
               <div className="text-right">
                 <p className="text-gray-400 mb-0.5 text-[10px] sm:text-xs">Juega el:</p>
-                <p className="text-white font-black text-2xl sm:text-2xl leading-none">Sábado 29 Agosto 2026</p>
-                <p className="text-gray-300 text-xs sm:text-sm">Con la loteria de Boyacá (Sorteo 4639)</p>
+                <p className="text-white font-black text-2xl sm:text-2xl leading-none">Sábado 12 Sept 2026</p>
+                <p className="text-gray-300 text-xs sm:text-sm">Con la loteria de Boyacá (Sorteo 4641)</p>
               </div>
             </div>
           </div>

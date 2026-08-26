@@ -40,7 +40,7 @@ export const BoletaItem = ({ boleta, onSelect }: BoletaItemProps) => {
         focus:outline-none focus:ring-2 focus:ring-teal-400
       `}
     >
-      <span className="text-[9px] sm:text-[10px] font-bold tabular-nums">
+      <span className="text-[11px] sm:text-xs font-bold tabular-nums">
         {boleta.numero}
       </span>
     </button>

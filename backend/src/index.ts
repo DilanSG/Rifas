@@ -3,6 +3,7 @@ import cors from 'cors';
 import compression from 'compression';
 import dotenv from 'dotenv';
 import path from 'path';
+import mongoose from 'mongoose';
 import { connectDB } from './config/database';
 
 // Rutas
@@ -76,7 +77,14 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.get('/api/health', (_req: Request, res: Response) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  // Verificar también la conexión a MongoDB
+  const mongoStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    mongo: mongoStatus,
+    ready: mongoose.connection.readyState === 1
+  });
 });
 
 app.use('/api/boletas', boletaRoutes);

@@ -11,6 +11,39 @@ const api = axios.create({
   timeout: 10000,
 });
 
+// Health check con verificación real del backend
+export const healthCheck = {
+  // Verificar si el servidor está activo
+  checkServer: async (): Promise<boolean> => {
+    try {
+      const response = await axios.get(`${API_URL}/health`, { timeout: 5000 });
+      return response.data?.status === 'ok';
+    } catch {
+      return false;
+    }
+  },
+
+  // Verificar si el servidor está completamente listo (incluyendo MongoDB)
+  checkReady: async (): Promise<{ ready: boolean; error?: string }> => {
+    try {
+      // Primero verificar que el servidor responda
+      const healthResponse = await axios.get(`${API_URL}/health`, { timeout: 5000 });
+      if (healthResponse.data?.status !== 'ok') {
+        return { ready: false, error: 'Servidor no disponible' };
+      }
+
+      // Luego intentar obtener boletas para verificar MongoDB
+      await axios.get(`${API_URL}/boletas`, { timeout: 5000 });
+      return { ready: true };
+    } catch (err: any) {
+      if (err.code === 'ECONNABORTED' || err.code === 'ERR_NETWORK') {
+        return { ready: false, error: 'Servidor iniciándose...' };
+      }
+      return { ready: false, error: 'Base de datos no disponible' };
+    }
+  }
+};
+
 export const boletaService = {
   // Obtener todas las boletas
   obtenerBoletas: async (): Promise<Boleta[]> => {

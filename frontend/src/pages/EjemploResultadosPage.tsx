@@ -7,28 +7,28 @@ export const EjemploResultadosPage = () => {
   const datosEjemplo = {
     numeroLoteriaCompleto: "3842",
     numeroGanador: "42",
-    fechaFinalizacion: "2026-08-29T22:00:00",
+    fechaFinalizacion: "2026-09-12T22:30:00",
     ganador: {
       numero: "42",
       estado: "pagada",
       nombreCensurado: "Ma*** Ro***",
       telefonoCensurado: "******7890",
-      fechaCompra: "2026-08-20T14:23:00",
+      fechaCompra: "2026-09-05T14:23:00",
       vendida: true
     },
     boletasPagadas: [
-      { numero: "01", nombreCensurado: "Ra*** Pe***", fechaCompra: "2026-08-10T10:15:00" },
-      { numero: "07", nombreCensurado: "Ju*** He***", fechaCompra: "2026-08-11T16:42:00" },
-      { numero: "15", nombreCensurado: "An*** Go***", fechaCompra: "2026-08-12T09:30:00" },
-      { numero: "23", nombreCensurado: "Lu*** Sá***", fechaCompra: "2026-08-13T11:20:00" },
-      { numero: "42", nombreCensurado: "Ma*** Ro***", fechaCompra: "2026-08-20T14:23:00" },
-      { numero: "58", nombreCensurado: "Jo*** Me***", fechaCompra: "2026-08-16T08:45:00" },
-      { numero: "67", nombreCensurado: "So*** Vá***", fechaCompra: "2026-08-17T13:15:00" },
-      { numero: "89", nombreCensurado: "Pa*** Ca***", fechaCompra: "2026-08-18T17:00:00" }
+      { numero: "01", nombreCensurado: "Ra*** Pe***", fechaCompra: "2026-08-28T10:15:00" },
+      { numero: "07", nombreCensurado: "Ju*** He***", fechaCompra: "2026-08-29T16:42:00" },
+      { numero: "15", nombreCensurado: "An*** Go***", fechaCompra: "2026-08-30T09:30:00" },
+      { numero: "23", nombreCensurado: "Lu*** Sá***", fechaCompra: "2026-08-31T11:20:00" },
+      { numero: "42", nombreCensurado: "Ma*** Ro***", fechaCompra: "2026-09-05T14:23:00" },
+      { numero: "58", nombreCensurado: "Jo*** Me***", fechaCompra: "2026-09-02T08:45:00" },
+      { numero: "67", nombreCensurado: "So*** Vá***", fechaCompra: "2026-09-03T13:15:00" },
+      { numero: "89", nombreCensurado: "Pa*** Ca***", fechaCompra: "2026-09-04T17:00:00" }
     ],
     boletasReservadas: [
-      { numero: "12", nombreCensurado: "Fe*** Mo***", fechaCompra: "2026-08-14T12:00:00" },
-      { numero: "34", nombreCensurado: "Cl*** Ri***", fechaCompra: "2026-08-15T15:30:00" }
+      { numero: "12", nombreCensurado: "Fe*** Mo***", fechaCompra: "2026-09-01T12:00:00" },
+      { numero: "34", nombreCensurado: "Cl*** Ri***", fechaCompra: "2026-09-02T15:30:00" }
     ]
   };
 
@@ -48,7 +48,7 @@ export const EjemploResultadosPage = () => {
 
         <div className="mb-6 sm:mb-8 text-center">
           <div className="inline-block bg-blue-500/10 border border-blue-500/30 text-blue-300 py-2 px-4 sm:px-6 rounded-lg font-semibold text-xs sm:text-sm">
-            Vista de ejemplo — Así se verán los resultados el 29 de agosto
+            Vista de ejemplo — Así se verán los resultados el 12 de septiembre
           </div>
         </div>
 
