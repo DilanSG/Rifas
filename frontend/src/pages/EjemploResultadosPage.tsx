@@ -7,7 +7,7 @@ export const EjemploResultadosPage = () => {
   const datosEjemplo = {
     numeroLoteriaCompleto: "3842",
     numeroGanador: "42",
-    fechaFinalizacion: "2026-09-12T22:30:00",
+    fechaFinalizacion: "2026-09-26T22:30:00",
     ganador: {
       numero: "42",
       estado: "pagada",
@@ -48,7 +48,7 @@ export const EjemploResultadosPage = () => {
 
         <div className="mb-6 sm:mb-8 text-center">
           <div className="inline-block bg-blue-500/10 border border-blue-500/30 text-blue-300 py-2 px-4 sm:px-6 rounded-lg font-semibold text-xs sm:text-sm">
-            Vista de ejemplo — Así se verán los resultados el 12 de septiembre
+            Vista de ejemplo — Así se verán los resultados el 26 de septiembre
           </div>
         </div>
 

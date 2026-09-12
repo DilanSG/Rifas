@@ -247,7 +247,7 @@ export const HomePage = () => {
                     </div>
                     <div>
                       <p className="mb-2 sm:mb-3 leading-relaxed">
-                        <strong>Resultados del sorteo:</strong> El 12 de septiembre, esta página se actualizará automáticamente 
+                        <strong>Resultados del sorteo:</strong> El 26 de septiembre, esta página se actualizará automáticamente 
                         mostrando el número ganador y los datos de todas las boletas vendidas para total transparencia.
                       </p>
                       <button 
@@ -281,7 +281,7 @@ export const HomePage = () => {
                     <div className="flex items-center justify-center gap-2 text-gray-400">
                       <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
                       <p className="text-xs sm:text-sm">
-                        Sorteo: <strong className="text-white">Sábado 12 de Septiembre 2026</strong> con la Lotería de Boyacá (Sorteo 4641)
+                        Sorteo: <strong className="text-white">Sábado 26 de Septiembre 2026</strong> con la Lotería de Boyacá (Sorteo 4643)
                       </p>
                     </div>
                   </div>
@@ -342,8 +342,8 @@ export const HomePage = () => {
               </div>
               <div className="text-right">
                 <p className="text-gray-400 mb-0.5 text-[10px] sm:text-xs">Juega el:</p>
-                <p className="text-white font-black text-2xl sm:text-2xl leading-none">Sábado 12 Sept 2026</p>
-                <p className="text-gray-300 text-xs sm:text-sm">Con la loteria de Boyacá (Sorteo 4641)</p>
+                <p className="text-white font-black text-2xl sm:text-2xl leading-none">Sábado 26 Sept 2026</p>
+                <p className="text-gray-300 text-xs sm:text-sm">Con la loteria de Boyacá (Sorteo 4643)</p>
               </div>
             </div>
           </div>
